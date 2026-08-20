@@ -142,3 +142,17 @@ and public certificate verification (`/overit/?id=...`) are retained for **2 yea
   Reuse this rather than adding ad hoc parsing when handling new AI-JSON responses.
 - Long lesson content is deliberately excluded from "return the full rewritten text" instructions above
   `RDLEG_LEKCE_DLOUHA_PRAH` (3500 chars) to avoid `max_tokens` truncation — see the constant's comment.
+
+## Planned features (not yet implemented)
+
+### Reklamace kódů
+Plánovaná funkce pro vracení nevyužitých kódů v refdrive-plugin:
+1. Tlačítko "Vrátit kód" pro nevyužité kódy ve firemním portálu (včetně hromadné akce).
+2. Validace: kód patří firmě + je nevyužitý + je do 14 dnů od přiřazení.
+3. Okamžitá deaktivace kódu.
+4. Notifikace autoškole ke schválení (5 dní na reakci, jinak auto-schválení).
+5. Notifikace na rd_admin_notif_email.
+6. Refundaci řeší přímo autoškola (mimo systém).
+7. Stav zobrazený ve firemním portálu: "čeká na refundaci" / "vráceno".
+
+Až se začne implementovat, tahle sekce se přesune do hlavního popisu funkcí a označí jako hotová.
