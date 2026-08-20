@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RefDrive.pro – Jak to funguje</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #080812;
+  --s1:      #0f0f1e;
+  --s2:      #141428;
+  --border:  rgba(255,255,255,.07);
+  --v1:      #7c3aed;
+  --v2:      #a78bfa;
+  --v3:      #c4b5fd;
+  --p1:      #db2777;
+  --p2:      #f472b6;
+  --g1:      #16a34a;
+  --g2:      #4ade80;
+  --b1:      #0284c7;
+  --b2:      #38bdf8;
+  --o1:      #ea580c;
+  --o2:      #fb923c;
+  --t1:      #f8f7ff;
+  --t2:      #b0aad4;
+  --t3:      #5a5570;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── NOISE TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: .4;
+}
+
+.wrap { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 80px; }
+
+/* ── HEADER ── */
+header {
+  padding: 0;
+  text-align: center;
+}
+.logo {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 15px; font-weight: 700; color: var(--t2);
+  margin-bottom: 28px;
+}
+.logo svg { width: 28px; height: 28px; }
+.logo-name { background: linear-gradient(135deg, var(--v2), var(--p2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+.headline {
+  font-size: clamp(28px, 6vw, 52px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -.03em;
+  margin-bottom: 14px;
+}
+.headline em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--v2) 0%, var(--p2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+.sub {
+  font-size: clamp(14px, 2.5vw, 17px);
+  color: var(--t2);
+  max-width: 520px;
+  margin: 0 auto 48px;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* ── GLOW ORBS ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: .25;
+}
+.orb-v { width: 500px; height: 500px; background: var(--v1); top: -200px; right: -100px; }
+.orb-p { width: 350px; height: 350px; background: var(--p1); bottom: 200px; left: -100px; }
+
+/* ══════════════════════════════
+   SECTION LABELS
+══════════════════════════════ */
+.sec-label {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--v2);
+  margin-bottom: 12px;
+}
+.sec-label::before {
+  content: '';
+  width: 24px; height: 2px;
+  background: linear-gradient(90deg, var(--v1), var(--v2));
+  border-radius: 99px;
+}
+.sec-title {
+  font-size: clamp(20px, 4vw, 28px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  margin-bottom: 6px;
+}
+.sec-title span {
+  background: linear-gradient(135deg, var(--v2), var(--p2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+
+/* ══════════════════════════════
+   ECOSYSTEM DIAGRAM
+══════════════════════════════ */
+.ecosystem {
+  margin-bottom: 64px;
+}
+
+/* Central platform node */
+.eco-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 32px;
+}
+.platform-node {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--v1) 25%, transparent), color-mix(in srgb, var(--p1) 15%, transparent));
+  border: 1px solid color-mix(in srgb, var(--v2) 35%, transparent);
+  border-radius: 20px;
+  padding: 20px 32px;
+  text-align: center;
+  position: relative;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 60px color-mix(in srgb, var(--v1) 20%, transparent), inset 0 1px 0 rgba(255,255,255,.06);
+  max-width: 280px;
+  width: 100%;
+}
+.platform-node::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 21px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--v2) 40%, transparent), color-mix(in srgb, var(--p2) 30%, transparent));
+  z-index: -1;
+}
+.pn-icon {
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--v1), var(--p1));
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--v1) 40%, transparent);
+}
+.pn-name {
+  font-size: 20px; font-weight: 800; letter-spacing: -.02em;
+  background: linear-gradient(135deg, var(--v2), var(--p2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 3px;
+}
+.pn-desc { font-size: 12px; color: var(--t2); font-weight: 400; }
+
+/* Actors row */
+.actors {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+@media (max-width: 580px) {
+  .actors { grid-template-columns: 1fr; gap: 12px; }
+}
+
+.actor {
+  border-radius: 16px;
+  padding: 20px 18px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.actor::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 16px;
+  opacity: .08;
+}
+.actor-as::before  { background: var(--v1); }
+.actor-firm::before { background: var(--b1); }
+.actor-rd::before  { background: var(--g1); }
+
+.actor-as  { border-color: color-mix(in srgb, var(--v1) 25%, transparent); }
+.actor-firm { border-color: rgba(2,132,199,.25); }
+.actor-rd  { border-color: rgba(22,163,74,.25); }
+
+.actor-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+}
+.actor-as .actor-icon  { background: color-mix(in srgb, var(--v1) 20%, transparent); }
+.actor-firm .actor-icon { background: rgba(2,132,199,.18); }
+.actor-rd .actor-icon  { background: rgba(22,163,74,.16); }
+
+.actor-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; letter-spacing: -.01em; }
+.actor-as .actor-name  { color: var(--v2); }
+.actor-firm .actor-name { color: var(--b2); }
+.actor-rd .actor-name  { color: var(--g2); }
+
+.actor-role { font-size: 12px; color: var(--t2); line-height: 1.5; font-weight: 400; }
+
+/* ══════════════════════════════
+   FLOW DIAGRAM
+══════════════════════════════ */
+.flow-section { margin-bottom: 64px; }
+
+.flow-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+}
+.flow-steps::before {
+  content: '';
+  position: absolute;
+  left: 24px;
+  top: 48px;
+  bottom: 48px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--v1) 0%, var(--p1) 50%, var(--g1) 100%);
+  opacity: .3;
+}
+
+.fstep {
+  display: flex;
+  gap: 20px;
+  padding: 20px 0;
+  align-items: flex-start;
+  position: relative;
+}
+.fstep + .fstep::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 24px;
+  width: 2px; height: 20px;
+  background: var(--border);
+}
+
+.fstep-num {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+  font-size: 18px; font-weight: 800;
+}
+.fsn-1 { background: color-mix(in srgb, var(--v1) 20%, transparent); border: 1px solid color-mix(in srgb, var(--v2) 35%, transparent); color: var(--v2); }
+.fsn-2 { background: rgba(2,132,199,.18); border: 1px solid rgba(56,189,248,.3); color: var(--b2); }
+.fsn-3 { background: rgba(234,88,12,.15); border: 1px solid rgba(251,146,60,.3); color: var(--o2); }
+.fsn-4 { background: color-mix(in srgb, var(--p1) 15%, transparent); border: 1px solid color-mix(in srgb, var(--p2) 30%, transparent); color: var(--p2); }
+.fsn-5 { background: rgba(22,163,74,.14); border: 1px solid rgba(74,222,128,.3); color: var(--g2); }
+
+.fstep-body { flex: 1; }
+
+.fstep-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 6px; flex-wrap: wrap;
+}
+.fstep-title { font-size: 16px; font-weight: 700; letter-spacing: -.01em; }
+.fstep-who {
+  font-size: 10px; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: 3px 9px;
+  border-radius: 99px;
+}
+.fw-as  { background: color-mix(in srgb, var(--v1) 15%, transparent); color: var(--v2); border: 1px solid color-mix(in srgb, var(--v2) 25%, transparent); }
+.fw-firm { background: rgba(2,132,199,.12); color: var(--b2); border: 1px solid rgba(56,189,248,.2); }
+.fw-rd  { background: rgba(22,163,74,.12); color: var(--g2); border: 1px solid rgba(74,222,128,.2); }
+.fw-auto { background: rgba(234,88,12,.12); color: var(--o2); border: 1px solid rgba(251,146,60,.2); }
+
+.fstep-desc { font-size: 13px; color: var(--t2); line-height: 1.7; font-weight: 400; margin-bottom: 10px; }
+
+.detail-chips {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.dchip {
+  font-size: 11px; font-weight: 500; padding: 3px 10px;
+  border-radius: 99px; border: 1px solid var(--border);
+  color: var(--t3); background: rgba(255,255,255,.03);
+  font-family: 'DM Mono', monospace;
+}
+.dchip-v { border-color: color-mix(in srgb, var(--v2) 30%, transparent); color: var(--v2); background: color-mix(in srgb, var(--v1) 8%, transparent); }
+.dchip-g { border-color: rgba(74,222,128,.3); color: var(--g2); background: rgba(22,163,74,.07); }
+.dchip-b { border-color: rgba(56,189,248,.3); color: var(--b2); background: rgba(2,132,199,.07); }
+.dchip-o { border-color: rgba(251,146,60,.3); color: var(--o2); background: rgba(234,88,12,.07); }
+
+/* ── CONNECTOR ARROWS ── */
+.connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 0 8px 68px;
+}
+.conn-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  max-width: 300px;
+}
+.conn-label {
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  color: var(--t3);
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════
+   ROLES TABLE
+══════════════════════════════ */
+.roles-section { margin-bottom: 64px; }
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+@media (max-width: 640px) { .roles-grid { grid-template-columns: 1fr; } }
+
+.role-col {
+  background: var(--s1);
+  padding: 0;
+}
+.role-head {
+  padding: 16px 20px;
+  display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.rh-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.rc-as .rh-icon  { background: color-mix(in srgb, var(--v1) 20%, transparent); }
+.rc-firm .rh-icon { background: rgba(2,132,199,.16); }
+.rc-rd .rh-icon  { background: rgba(22,163,74,.14); }
+
+.rh-name { font-size: 13px; font-weight: 700; }
+.rc-as .rh-name  { color: var(--v2); }
+.rc-firm .rh-name { color: var(--b2); }
+.rc-rd .rh-name  { color: var(--g2); }
+
+.role-items { padding: 12px 0; }
+.role-item {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 8px 20px;
+}
+.ri-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  margin-top: 6px; flex-shrink: 0;
+}
+.rc-as .ri-dot  { background: var(--v2); }
+.rc-firm .ri-dot { background: var(--b2); }
+.rc-rd .ri-dot  { background: var(--g2); }
+
+.ri-text { font-size: 12px; color: var(--t2); line-height: 1.6; }
+.ri-text strong { color: var(--t1); font-weight: 600; }
+
+/* ══════════════════════════════
+   DATA FLOW DIAGRAM
+══════════════════════════════ */
+.dataflow-section { margin-bottom: 64px; }
+
+.df-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  position: relative;
+}
+@media (max-width: 600px) { .df-grid { grid-template-columns: 1fr; } }
+
+.df-node {
+  background: var(--s2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.df-node::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: 99px 99px 0 0;
+}
+.dfn-v::after  { background: linear-gradient(90deg, var(--v1), var(--v2)); }
+.dfn-b::after  { background: linear-gradient(90deg, var(--b1), var(--b2)); }
+.dfn-o::after  { background: linear-gradient(90deg, var(--o1), var(--o2)); }
+.dfn-p::after  { background: linear-gradient(90deg, var(--p1), var(--p2)); }
+.dfn-g::after  { background: linear-gradient(90deg, var(--g1), var(--g2)); }
+.dfn-w::after  { background: linear-gradient(90deg, var(--v2), var(--b2)); }
+
+.dfn-icon { margin-bottom: 10px; }
+.dfn-label {
+  font-size: 12px; font-weight: 700; margin-bottom: 5px; letter-spacing: -.01em;
+}
+.dfn-v .dfn-label  { color: var(--v2); }
+.dfn-b .dfn-label  { color: var(--b2); }
+.dfn-o .dfn-label  { color: var(--o2); }
+.dfn-p .dfn-label  { color: var(--p2); }
+.dfn-g .dfn-label  { color: var(--g2); }
+.dfn-w .dfn-label  { color: var(--v3); }
+
+.dfn-text { font-size: 11px; color: var(--t2); line-height: 1.6; }
+
+/* ══════════════════════════════
+   CTA FOOTER
+══════════════════════════════ */
+.cta-section {
+  text-align: center;
+  padding: 48px 20px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--v1) 10%, transparent) 0%, color-mix(in srgb, var(--p1) 7%, transparent) 100%);
+  border: 1px solid color-mix(in srgb, var(--v2) 20%, transparent);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--v1) 20%, transparent) 0%, transparent 70%);
+  top: -100px; left: 50%; transform: translateX(-50%);
+}
+.cta-title { font-size: clamp(22px, 4vw, 32px); font-weight: 900; letter-spacing: -.02em; margin-bottom: 10px; position: relative; }
+.cta-sub { font-size: 15px; color: var(--t2); margin-bottom: 24px; position: relative; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--v1), var(--p1));
+  color: white; font-size: 15px; font-weight: 700;
+  padding: 13px 28px; border-radius: 99px;
+  text-decoration: none; letter-spacing: -.01em;
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--v1) 40%, transparent);
+  position: relative;
+  transition: transform .2s, box-shadow .2s;
+}
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px color-mix(in srgb, var(--v1) 50%, transparent); }
+</style>
+</head>
+<body>
+
+<div class="orb orb-v"></div>
+<div class="orb orb-p"></div>
+
+<div class="wrap">
+
+<!-- ── HEADER ── -->
+<header>
+  <h1 class="headline">Jak funguje<br><em>platforma pro autoškoly</em></h1>
+  <p class="sub">Přehledný diagram propojení autoškol, firem a zaměstnanců na jedné platformě.</p>
+</header>
+
+<!-- ══════════════════════════════
+     1. EKOSYSTÉM – KDO JE KDO
+══════════════════════════════ -->
+<section class="ecosystem">
+  <div class="sec-label">Ekosystém</div>
+  <h2 class="sec-title">Tři role, jedna platforma</h2>
+  <p style="font-size:14px;color:var(--t2);margin-bottom:28px;font-weight:400">RefDrive.pro propojuje tři strany – každá má jasnou roli a vlastní rozhraní.</p>
+
+  <div class="actors">
+
+    <!-- AUTOŠKOLA -->
+    <div class="actor actor-as">
+      <div class="actor-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="actor-name">Autoškola</div>
+      <div class="actor-role">Registruje se na platformě. Nastavuje cenu kódů a obchodní podmínky. Kurz a testy jsou společné pro všechny autoškoly a ověřuje je nezávislý lektor. Přijímá platby přímo od firem.</div>
+    </div>
+
+    <!-- FIRMA -->
+    <div class="actor actor-firm">
+      <div class="actor-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+          <line x1="12" y1="12" x2="12" y2="16"/>
+          <line x1="10" y1="14" x2="14" y2="14"/>
+        </svg>
+      </div>
+      <div class="actor-name">Firma</div>
+      <div class="actor-role">Vybere autoškolu, objedná přístupové kódy pro zaměstnance a zaplatí online. Sleduje postup školení ve svém portálu.</div>
+    </div>
+
+    <!-- ZAMĚSTNANEC / ŘIDIČ -->
+    <div class="actor actor-rd">
+      <div class="actor-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div class="actor-name">Zaměstnanec</div>
+      <div class="actor-role">Zadá přístupový kód, absolvuje e-learningový kurz a test. Po úspěchu ihned obdrží certifikát.</div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- ══════════════════════════════
+     2. FLOW – KROK ZA KROKEM
+══════════════════════════════ -->
+<section class="flow-section">
+  <div class="sec-label">Průběh procesu</div>
+  <h2 class="sec-title">Od registrace <span>k certifikátu</span></h2>
+  <p style="font-size:14px;color:var(--t2);margin-bottom:28px;font-weight:400">Každý krok je automatizovaný – žádné telefony, žádné papírování.</p>
+
+  <div class="flow-steps">
+
+    <!-- KROK 1 -->
+    <div class="fstep">
+      <div class="fstep-num fsn-1">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      </div>
+      <div class="fstep-body">
+        <div class="fstep-header">
+          <span class="fstep-title">Registrace a schválení autoškoly</span>
+          <span class="fstep-who fw-as">Autoškola</span>
+          <span class="fstep-who fw-auto">Admin</span>
+        </div>
+        <p class="fstep-desc">Autoškola vyplní registraci – název, IČO, URL obchodních podmínek a heslo. Admin platformy registraci do 24 hodin zkontroluje a schválí. Teprve pak se autoškola zobrazí firmám.</p>
+        <div class="detail-chips">
+          <span class="dchip dchip-v">Souhlas s OP platformy</span>
+          <span class="dchip dchip-v">URL vlastních OOP</span>
+          <span class="dchip dchip-v">Číslo účtu pro příjem plateb</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KROK 2 -->
+    <div class="fstep">
+      <div class="fstep-num fsn-2">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/>
+          <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+        </svg>
+      </div>
+      <div class="fstep-body">
+        <div class="fstep-header">
+          <span class="fstep-title">Firma si vybere autoškolu a objedná kódy</span>
+          <span class="fstep-who fw-firm">Firma</span>
+        </div>
+        <p class="fstep-desc">Firma projde seznam registrovaných autoškol, vybere si tu svou a objedná počet kódů dle počtu zaměstnanců. Před odesláním souhlasí s obchodními podmínkami konkrétní autoškoly. Platba kartou nebo bankovním převodem – vše online.</p>
+        <div class="detail-chips">
+          <span class="dchip dchip-b">Karta → okamžité kódy</span>
+          <span class="dchip dchip-b">Převod → proforma faktura + QR</span>
+          <span class="dchip dchip-b">Souhlas s OOP autoškoly → uložen</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KROK 3 -->
+    <div class="fstep">
+      <div class="fstep-num fsn-3">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/>
+        </svg>
+      </div>
+      <div class="fstep-body">
+        <div class="fstep-header">
+          <span class="fstep-title">Kódy dorazí do 24 hodin</span>
+          <span class="fstep-who fw-auto">Automaticky</span>
+        </div>
+        <p class="fstep-desc">Po potvrzení platby systém automaticky vygeneruje přístupové kódy a odešle je emailem firmě. Každý zaměstnanec dostane svůj jedinečný kód ve formátu <code style="font-family:'DM Mono';font-size:12px;color:var(--b2)">ABC-12345</code> platný 1 rok.</p>
+        <div class="detail-chips">
+          <span class="dchip dchip-o">Kód = 1 zaměstnanec</span>
+          <span class="dchip dchip-o">Platnost 1 rok</span>
+          <span class="dchip dchip-o">Reminder 30 dní před expirací</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KROK 4 -->
+    <div class="fstep">
+      <div class="fstep-num fsn-4">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+      </div>
+      <div class="fstep-body">
+        <div class="fstep-header">
+          <span class="fstep-title">Zaměstnanec absolvuje kurz a test</span>
+          <span class="fstep-who fw-rd">Zaměstnanec</span>
+        </div>
+        <p class="fstep-desc">Zaměstnanec zadá svůj kód na refdrive.pro, vyplní jméno a spustí školení. 10 lekcí + závěrečný test (15 otázek, min. 80 % úspěšnost). Celé školení trvá cca 30–45 minut, lze ho přerušit a dokončit kdykoliv.</p>
+        <div class="detail-chips">
+          <span class="dchip dchip-v">10 lekcí e-learningu</span>
+          <span class="dchip dchip-v">Závěrečný test</span>
+          <span class="dchip dchip-v">Min. 80 % → úspěch</span>
+          <span class="dchip dchip-v">Mobilní i desktop</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- KROK 5 -->
+    <div class="fstep">
+      <div class="fstep-num fsn-5">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="6"/>
+          <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>
+        </svg>
+      </div>
+      <div class="fstep-body">
+        <div class="fstep-header">
+          <span class="fstep-title">Certifikát ihned, firma notifikována</span>
+          <span class="fstep-who fw-auto">Automaticky</span>
+        </div>
+        <p class="fstep-desc">Po úspěšném testu systém ihned vygeneruje certifikát s unikátním QR kódem. Zaměstnavatel dostane automatický email s výsledkem. Certifikát je ověřitelný na refdrive.pro/overit/ – splňuje zákonnou povinnost evidence dle § 103 zákoníku práce.</p>
+        <div class="detail-chips">
+          <span class="dchip dchip-g">PDF certifikát ihned</span>
+          <span class="dchip dchip-g">QR ověření pravosti</span>
+          <span class="dchip dchip-g">Email zaměstnavateli</span>
+          <span class="dchip dchip-g">§103 zákoník práce ✓</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     3. CO KDO SPRAVUJE
+══════════════════════════════ -->
+<section class="roles-section">
+  <div class="sec-label">Portály a přístupy</div>
+  <h2 class="sec-title">Každá strana má <span>vlastní rozhraní</span></h2>
+  <p style="font-size:14px;color:var(--t2);margin-bottom:20px;font-weight:400">Tři oddělené portály, každý přesně pro svou roli.</p>
+
+  <div class="roles-grid">
+
+    <!-- AUTOŠKOLA -->
+    <div class="role-col rc-as">
+      <div class="role-head">
+        <div class="rh-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div>
+          <div class="rh-name">Admin autoškoly</div>
+          <div style="font-size:11px;color:var(--t3)">WP admin portál</div>
+        </div>
+      </div>
+      <div class="role-items">
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Dashboard</strong> – přehledy, poslední absolventi, výstrahy</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Firmy a kódy</strong> – správa objednávek, filtry, exporty</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Absolventi</strong> – seznam s exportem CSV</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Platební údaje</strong> – Číslo účtu, fakturace, OOP URL</div></div>
+
+      </div>
+    </div>
+
+    <!-- FIRMA -->
+    <div class="role-col rc-firm">
+      <div class="role-head">
+        <div class="rh-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+        </div>
+        <div>
+          <div class="rh-name">Firemní portál</div>
+          <div style="font-size:11px;color:var(--t3)">refdrive.pro/firma-portal</div>
+        </div>
+      </div>
+      <div class="role-items">
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Přehled kódů</strong> – použité / nevyužité / expirující</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Objednávky</strong> – historie, stav plateb</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Absolventi</strong> – kdo splnil, kdy, s jakým výsledkem</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Certifikáty</strong> – přístup ke všem certifikátům firmy</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text">Přihlášení přes <strong>OTP email kód</strong></div></div>
+      </div>
+    </div>
+
+    <!-- ZAMĚSTNANEC -->
+    <div class="role-col rc-rd">
+      <div class="role-head">
+        <div class="rh-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <div class="rh-name">Kurz řidiče</div>
+          <div style="font-size:11px;color:var(--t3)">refdrive.pro/kurz</div>
+        </div>
+      </div>
+      <div class="role-items">
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text">Vstup pomocí <strong>přístupového kódu</strong> + jméno</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>10 lekcí</strong> e-learningového kurzu</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Test 15 otázek</strong>, min. 80 % pro úspěch</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text"><strong>Certifikát</strong> ke stažení ihned po absolvování</div></div>
+        <div class="role-item"><div class="ri-dot"></div><div class="ri-text">Bez registrace, bez hesla – <strong>jen kód</strong></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══════════════════════════════
+     4. CO PLATFORMA ŘEŠÍ SAMA
+══════════════════════════════ -->
+<section class="dataflow-section">
+  <div class="sec-label">Automatizace</div>
+  <h2 class="sec-title">Co platforma <span>udělá sama</span></h2>
+  <p style="font-size:14px;color:var(--t2);margin-bottom:20px;font-weight:400">Tyto věci se dějí bez zásahu autoškoly – systém pracuje za vás.</p>
+
+  <div class="df-grid">
+    <div class="df-node dfn-b">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+      </div>
+      <div class="dfn-label">Platební brána</div>
+      <div class="dfn-text">Karta (Stripe) nebo bankovní převod. Proforma faktura s QR platbou odeslaná emailem.</div>
+    </div>
+    <div class="df-node dfn-o">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+      </div>
+      <div class="dfn-label">Emaily a notifikace</div>
+      <div class="dfn-text">Kódy po platbě, certifikát po absolvování, notifikace zaměstnavateli, reminder před expirací.</div>
+    </div>
+    <div class="df-node dfn-v">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="dfn-label">Audit trail</div>
+      <div class="dfn-text">Datum a IP souhlasu s OOP, snapshot URL podmínek v době objednávky – právně průkazné záznamy.</div>
+    </div>
+    <div class="df-node dfn-g">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div class="dfn-label">Generování certifikátů</div>
+      <div class="dfn-text">PDF certifikát s unikátním QR kódem. Ověření pravosti přes refdrive.pro/overit/ kdykoli.</div>
+    </div>
+    <div class="df-node dfn-p">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <div class="dfn-label">Monitoring expirace</div>
+      <div class="dfn-text">Každý den kontrola kódů expirujících za 30 dní – firma dostane automatický přehled nevyužitých kódů.</div>
+    </div>
+    <div class="df-node dfn-w">
+      <div class="dfn-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4.03 3-9 3S3 13.66 3 12"/><path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5"/></svg>
+      </div>
+      <div class="dfn-label">Evidence a export</div>
+      <div class="dfn-text">Záznamy všech absolventů v admin portálu. Export CSV za libovolné období jedním klikem.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section">
+  <h2 class="cta-title">Připojte svou autoškolu</h2>
+  <p class="cta-sub">Rychlá registrace, schválení obvykle do 24 hodin. Měsíční balíček od {{RD_MIN_TIER_PRICE}} Kč.</p>
+  <a class="cta-btn" href="https://www.refdrive.pro/registrace-autoskoly/">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+    Registrovat autoškolu
+  </a>
+</section>
+
+</div><!-- /wrap -->
+</body>
+</html>

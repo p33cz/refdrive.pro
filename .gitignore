@@ -1,0 +1,30 @@
+# WordPress core / config (nikdy necommitovat)
+wp-config.php
+wp-content/uploads/
+*.sql
+*.sql.gz
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Dependencies (pokud by se v budoucnu přidal build proces)
+node_modules/
+vendor/
+
+# Logy a cache
+*.log
+cache/
+*.cache
+
+# Build výstupy / ZIP balíčky (release ZIPy negenerujeme do gitu, ty zůstávají jako release assety)
+*.zip
+
+# Citlivé konfigurace, pokud by kdy vznikly jako soubor
+.env
+.env.local
+secrets.php
+config-local.php

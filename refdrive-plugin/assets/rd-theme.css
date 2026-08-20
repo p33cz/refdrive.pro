@@ -1,0 +1,130 @@
+/*
+ * =====================================================
+ * RefDrive Plugin – Theme Variables
+ * =====================================================
+ * Chcete použít jinou šablonu? Stačí překrýt tyto
+ * proměnné v CSS vaší šablony nebo v Dodatečném CSS.
+ *
+ * TMAVÝ THEME (výchozí):
+ *   Není třeba nic měnit.
+ *
+ * SVĚTLÝ THEME:
+ *   Zkopírujte sekci "Light theme override" níže
+ *   do Dodatečného CSS vaší šablony.
+ * =====================================================
+ */
+
+/* === VÝCHOZÍ TMAVÝ THEME === */
+:root {
+  /* Pozadí */
+  --rd-bg-base:    #0d1117;
+  --rd-bg-surface: #161b22;
+  --rd-bg-overlay: #21262d;
+
+  /* Ohraničení */
+  --rd-border:     #21262d;
+  --rd-border-mid: #30363d;
+
+  /* Text */
+  --rd-text-1:     #e6edf3;
+  --rd-text-2:     #8b949e;
+  --rd-text-3:     #484f58;
+
+  /* Modrá */
+  --rd-blue:        #2563eb;
+  --rd-blue-dim:    #1c2a3f;
+  --rd-blue-txt:    #60a5fa;
+  --rd-blue-border: #1d4ed8;
+
+  /* Zelená */
+  --rd-green:        #3fb950;
+  --rd-green-dim:    #132a1e;
+  --rd-green-border: #196530;
+  --rd-green-txt:    #3fb950;
+
+  /* Červená */
+  --rd-red:        #f47067;
+  --rd-red-dim:    #3d1515;
+  --rd-red-border: #8b2020;
+
+  /* Amber */
+  --rd-amber:      #fbbf24;
+  --rd-amber-dim:  #2a1f0e;
+  --rd-amber-txt:  #fbbf24;
+
+  /* Purple */
+  --rd-purple:     var(--rd-accent-1);
+  --rd-purple-dim: #1e1a3a;
+
+  /* Poloměry */
+  --rd-radius:    8px;
+  --rd-radius-lg: 12px;
+
+  /* Typografie */
+  --rd-font: 'DM Sans', system-ui, sans-serif;
+  --rd-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/*
+ * =====================================================
+ * SVĚTLÝ THEME OVERRIDE
+ * Vložte do Dodatečného CSS pro světlou šablonu:
+ * =====================================================
+
+:root {
+  --rd-bg-base:    #ffffff;
+  --rd-bg-surface: #f8fafc;
+  --rd-bg-overlay: #f1f5f9;
+  --rd-border:     #e2e8f0;
+  --rd-border-mid: #cbd5e1;
+  --rd-text-1:     #0f172a;
+  --rd-text-2:     #475569;
+  --rd-text-3:     #94a3b8;
+  --rd-blue:        #2563eb;
+  --rd-blue-dim:    #eff6ff;
+  --rd-blue-txt:    #1d4ed8;
+  --rd-blue-border: #93c5fd;
+  --rd-green:        #16a34a;
+  --rd-green-dim:    #f0fdf4;
+  --rd-green-border: #86efac;
+  --rd-green-txt:    #15803d;
+  --rd-red:        #dc2626;
+  --rd-red-dim:    #fef2f2;
+  --rd-red-border: #fca5a5;
+  --rd-amber:      #d97706;
+  --rd-amber-dim:  #fffbeb;
+  --rd-amber-txt:  #92400e;
+  --rd-purple:     var(--rd-grad-from);
+  --rd-purple-dim: #f5f3ff;
+}
+
+ * =====================================================
+ */
+
+/* === SVĚTLÝ THEME AKTIVNÍ === */
+[data-theme="light"] {
+  --rd-bg-base:    #ffffff;
+  --rd-bg-surface: #f8fafc;
+  --rd-bg-overlay: #f1f5f9;
+  --rd-border:     #e2e8f0;
+  --rd-border-mid: #cbd5e1;
+  --rd-text-1:     #0f172a;
+  --rd-text-2:     #475569;
+  --rd-text-3:     #94a3b8;
+  --rd-blue:        #2563eb;
+  --rd-blue-dim:    #eff6ff;
+  --rd-blue-txt:    #1d4ed8;
+  --rd-blue-border: #93c5fd;
+  --rd-green:        #16a34a;
+  --rd-green-dim:    #f0fdf4;
+  --rd-green-border: #86efac;
+  --rd-green-txt:    #15803d;
+  --rd-red:        #dc2626;
+  --rd-red-dim:    #fef2f2;
+  --rd-red-border: #fca5a5;
+  --rd-amber:      #d97706;
+  --rd-amber-dim:  #fffbeb;
+  --rd-amber-txt:  #92400e;
+  --rd-purple:     var(--rd-grad-from);
+  --rd-purple-dim: #f5f3ff;
+}

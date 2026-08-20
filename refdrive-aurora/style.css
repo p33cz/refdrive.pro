@@ -1,0 +1,15 @@
+/*
+Theme Name: RefDrive Aurora
+Theme URI: https://refdrive.pro
+Description: Aurora theme for RefDrive plugin. Dark/light mode, gradient design. v3.0.0 — multitenantní platforma autoškol.
+Version: 3.4.58
+Author: RefDrive
+Text Domain: refdrive-aurora
+ * 
+ * POZNÁMKA PRO AI: short_name v manifest.json je vždy „v" + verze šablony.
+ * Při každé aktualizaci verze šablony se short_name automaticky aktualizuje.
+ * Verze se nastavuje v tomto souboru (Version:) a v functions.php.
+Requires at least: 5.9
+Tested up to: 6.7
+Requires PHP: 7.4
+*/

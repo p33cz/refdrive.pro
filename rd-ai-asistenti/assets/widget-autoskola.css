@@ -1,0 +1,218 @@
+/* AI asistent — autoškola admin — ladí s rd-btn-detail / rd-stat / rd-back-btn stylem */
+.rdai-widget {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999999;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.rdai-toggle-cb {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+
+.rdai-panel { display: none; }
+.rdai-toggle-cb:checked ~ .rdai-panel { display: flex; }
+.rdai-toggle-cb:checked ~ .rdai-toggle { display: none; }
+.rdai-close-label { cursor: pointer; }
+
+/* Tlačítko — ladí s .rd-btn-detail ale výraznější (primary akce) */
+.rdai-toggle {
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 6px;
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,.12);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background .15s, border-color .15s;
+}
+.rdai-toggle:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* Panel — ladí s .rd-z-card / rd-dash-alert */
+.rdai-panel {
+    position: absolute;
+    bottom: 46px;
+    right: 0;
+    width: 360px;
+    max-width: 94vw;
+    height: 480px;
+    max-height: 72vh;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.12);
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Hlavička — border-top accent jako .rd-stat */
+.rdai-header {
+    background: #fff;
+    color: #111827;
+    padding: 12px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 13px;
+    border-bottom: 1px solid #e5e7eb;
+    border-top: 3px solid #2563eb;
+    flex-shrink: 0;
+}
+.rdai-header .rdai-close-label {
+    background: none;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 8px;
+    margin: -2px -4px -2px 0;
+    min-width: 28px;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    transition: background .1s, color .1s;
+}
+.rdai-header .rdai-close-label:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    color: #111827;
+}
+
+/* Zprávy */
+.rdai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #f9fafb;
+}
+
+.rdai-msg {
+    max-width: 88%;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+.rdai-msg-bot {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    align-self: flex-start;
+    color: #1f2937;
+    box-shadow: 0 1px 2px rgba(0,0,0,.05);
+}
+.rdai-msg-user {
+    background: #2563eb;
+    color: #fff;
+    border: 1px solid #2563eb;
+    align-self: flex-end;
+}
+.rdai-msg-loading {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    align-self: flex-start;
+    color: #9ca3af;
+    font-style: italic;
+    font-size: 12.5px;
+}
+
+/* Formulář — ladí s WP admin input + .rd-btn-detail */
+.rdai-form {
+    display: flex;
+    border-top: 1px solid #e5e7eb;
+    padding: 8px;
+    gap: 6px;
+    background: #fff;
+    flex-shrink: 0;
+}
+.rdai-form input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 13px;
+    outline: none;
+    background: #fff;
+    color: #1f2937;
+    min-width: 0;
+}
+.rdai-form input::placeholder { color: #9ca3af; }
+.rdai-form input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37,99,235,.15);
+}
+.rdai-form button {
+    background: #2563eb;
+    color: #fff;
+    border: 1px solid #2563eb;
+    border-radius: 6px;
+    padding: 6px 13px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background .15s;
+}
+.rdai-form button:hover { background: #1d4ed8; border-color: #1d4ed8; }
+.rdai-form button:disabled { opacity: .5; cursor: default; }
+
+.rdai-rawdata {
+    align-self: flex-start;
+    max-width: 90%;
+    font-size: 11px;
+    color: #9ca3af;
+}
+.rdai-rawdata summary { cursor: pointer; user-select: none; }
+.rdai-rawdata pre {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 6px 8px;
+    overflow-x: auto;
+    margin-top: 4px;
+    max-height: 140px;
+    color: #374151;
+    font-size: 11px;
+}
+
+@media (max-width: 480px) {
+    .rdai-widget { bottom: 16px; right: 12px; }
+    .rdai-panel { width: calc(100vw - 24px); height: 54vh; }
+}
+
+/* Typing indicator animace */
+@keyframes rdai-bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+    30%            { transform: translateY(-5px); opacity: 1; }
+}
+.rdai-typing { display: inline-flex; align-items: center; gap: 4px; height: 18px; }
+.rdai-typing span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2563eb;
+    animation: rdai-bounce 1.2s infinite;
+}
+.rdai-typing span:nth-child(2) { animation-delay: .2s; }
+.rdai-typing span:nth-child(3) { animation-delay: .4s; }

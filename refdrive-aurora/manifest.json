@@ -1,0 +1,14 @@
+{
+  "name": "RefDrive – Školení řidičů",
+  "short_name": "RefDrive",
+  "description": "Online školení referentských řidičů",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#06040f",
+  "theme_color": "#06040f",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/wp-content/themes/refdrive-aurora/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/wp-content/themes/refdrive-aurora/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
