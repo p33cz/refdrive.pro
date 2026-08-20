@@ -20,8 +20,9 @@ vendor/
 cache/
 *.cache
 
-# Build výstupy / ZIP balíčky (release ZIPy negenerujeme do gitu, ty zůstávají jako release assety)
-*.zip
+# Build výstupy / ZIP balíčky
+# Release ZIPy jednotlivých komponent se naopak commitují do rootu repa (viz "Standard workflow
+# after any code change" v CLAUDE.md) — nejsou zde ignorované záměrně.
 
 # Citlivé konfigurace, pokud by kdy vznikly jako soubor
 .env
