@@ -156,3 +156,12 @@ Plánovaná funkce pro vracení nevyužitých kódů v refdrive-plugin:
 7. Stav zobrazený ve firemním portálu: "čeká na refundaci" / "vráceno".
 
 Až se začne implementovat, tahle sekce se přesune do hlavního popisu funkcí a označí jako hotová.
+
+## Standard workflow after any code change
+
+Po každé dokončené úpravě kódu v libovolné komponentě (bez nutnosti to explicitně žádat):
+1. Zvyš verzi podle pravidel výše (Versioning).
+2. Vytvoř aktualizovaný ZIP balíček dané komponenty (název odpovídá nové verzi) do rootu repa.
+3. Proveď git commit s výstižnou zprávou popisující změnu.
+4. Pushni na origin/main.
+Tohle prováděj automaticky po dokončení úpravy, pokud uživatel výslovně neřekne, že chce nejdřív jen náhled bez commitu/ZIPu.
