@@ -25,9 +25,9 @@ below), each with its own version.
 
 ### Versioning
 - Na každou změnu v tématu/pluginu zvyš semver na DVOU místech současně:
-  themes: `style.css` Theme header verze + `functions.php` verzní konstanta.
-  plugins: Plugin Name header verze + verzní konstanta v kódu.
-  Verze musí být viditelná v WP adminu.
+  - themes: `style.css` Theme header verze + `functions.php` verzní konstanta
+  - plugins: Plugin Name header verze + verzní konstanta v kódu
+  - Verze musí být viditelná v WP adminu.
 - ZIP název balíčku při release odpovídá téhle verzi.
 
 (Konstanty: `RD_VERSION`, `RDLEG_VERSION`, `RDAI_VERSION`, `RDAURORA_VERSION`.)
