@@ -3,7 +3,7 @@
  * Plugin Name: refdrive.pro – Školení Řidičů
  * Plugin URI:  https://refdrive.pro/
  * Description: Kompletní systém školení referentských řidičů. Generátor kódů, kurz, kvíz, certifikát, email, Stripe platby. Multitenantní platforma pro autoškoly.
- * Version:     9.0.401
+ * Version:     9.0.402
  * Author:      refdrive.pro
  * Author URI:  https://refdrive.pro/
  * License:     Proprietary
@@ -67,7 +67,7 @@ add_action('wp_head', function() {
 
 
 
-define('RD_VERSION', '9.0.401');
+define('RD_VERSION', '9.0.402');
 define('RD_TABLE_KODY',        $GLOBALS['wpdb']->prefix . 'rd_kody');
 define('RD_TABLE_RIDICI',      $GLOBALS['wpdb']->prefix . 'rd_ridici');
 define('RD_TABLE_OBJ',         $GLOBALS['wpdb']->prefix . 'rd_objednavky');
@@ -2258,7 +2258,13 @@ add_filter('wp_headers', function($headers) {
     $headers['X-Frame-Options']           = 'SAMEORIGIN';
     $headers['X-Content-Type-Options']    = 'nosniff';
     $headers['Referrer-Policy']           = 'strict-origin-when-cross-origin';
-    $headers['Permissions-Policy']        = 'camera=(), microphone=(), geolocation=()';
+    // Appka AI Agenti (samostatný plugin) potřebuje na tomhle webu geolokaci
+    // (sdílení polohy v chatu) a mikrofon (diktování zprávy) — proto se
+    // povolují jen pro vlastní doménu (self), ne pro cizí iframy. Kameru
+    // appka přes živý getUserMedia stream nepoužívá (jen výběr souboru
+    // přes <input type="file" capture>, který Permissions-Policy neřeší),
+    // takže zůstává blokovaná jako dřív.
+    $headers['Permissions-Policy']        = 'camera=(), microphone=(self), geolocation=(self)';
     // CSP pouze na frontendu (ne v administraci)
     if (!is_admin()) {
         $headers['Content-Security-Policy'] =
