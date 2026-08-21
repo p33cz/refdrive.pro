@@ -3,7 +3,7 @@
  * Plugin Name: refdrive.pro – Školení Řidičů
  * Plugin URI:  https://refdrive.pro/
  * Description: Kompletní systém školení referentských řidičů. Generátor kódů, kurz, kvíz, certifikát, email, Stripe platby. Multitenantní platforma pro autoškoly.
- * Version:     9.0.402
+ * Version:     9.0.403
  * Author:      refdrive.pro
  * Author URI:  https://refdrive.pro/
  * License:     Proprietary
@@ -67,7 +67,7 @@ add_action('wp_head', function() {
 
 
 
-define('RD_VERSION', '9.0.402');
+define('RD_VERSION', '9.0.403');
 define('RD_TABLE_KODY',        $GLOBALS['wpdb']->prefix . 'rd_kody');
 define('RD_TABLE_RIDICI',      $GLOBALS['wpdb']->prefix . 'rd_ridici');
 define('RD_TABLE_OBJ',         $GLOBALS['wpdb']->prefix . 'rd_objednavky');
@@ -2274,7 +2274,11 @@ add_filter('wp_headers', function($headers) {
             "font-src 'self' https://fonts.gstatic.com; " .
             "img-src 'self' data: https:; " .
             "frame-src https://js.stripe.com; " .
-            "connect-src 'self' https://api.stripe.com; " .
+            // https://nominatim.openstreetmap.org: appka AI Agenti (samostatný
+            // plugin) z něj přes fetch() dotahuje reverse geocoding (adresu
+            // ke sdílené poloze v chatu) — bez týhle výjimky ho CSP blokuje
+            // a appka umí zobrazit jen souřadnice, ne adresu.
+            "connect-src 'self' https://api.stripe.com https://nominatim.openstreetmap.org; " .
             "object-src 'none';";
     }
     return $headers;
