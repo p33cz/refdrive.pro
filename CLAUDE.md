@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Monorepo for the RefDrive.pro platform (AVITONA s.r.o.) — a multi-tenant WordPress system for mandatory
+Monorepo for the RefDrive.pro platform — a multi-tenant WordPress system for mandatory
 driver-safety training of company car drivers in the Czech Republic ("referentští řidiči"). Plain PHP,
 no build step, no package manager, no automated test suite. Each folder is deployed as a standalone
 WordPress plugin or theme (installed directly into `wp-content/plugins/` / `wp-content/themes/`).

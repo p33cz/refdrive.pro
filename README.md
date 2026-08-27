@@ -1,6 +1,8 @@
 # RefDrive Suite
 
-Monorepo pro platformu RefDrive.pro (AVITONA s.r.o.) — multi-tenant WordPress systém pro povinné školení řidičů v ČR.
+Monorepo pro platformu RefDrive.pro — multi-tenant WordPress systém pro povinné školení řidičů v ČR.
+
+Autor: David Helcl
 
 ## Komponenty
 
