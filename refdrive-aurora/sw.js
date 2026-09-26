@@ -21,6 +21,9 @@ self.addEventListener('fetch', e => {
   // způsobuje, že se externí obrázky vůbec nezobrazí.
   if (e.request.method !== 'GET') return;
   if (new URL(e.request.url).origin !== self.location.origin) return;
+  // Video/audio (hero video na úvodní stránce) posílá rozsahové požadavky (Range)
+  // a Safari je přes service worker spolehlivě nepřehraje — necháme je jít přímo na síť.
+  if (e.request.destination === 'video' || e.request.destination === 'audio' || e.request.headers.has('range')) return;
 
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))

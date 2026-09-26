@@ -53,7 +53,7 @@ function rd_pwa_copy_files() {
 
 if (!defined('ABSPATH')) exit;
 
-define('RDAURORA_VERSION', '3.4.58');
+define('RDAURORA_VERSION', '3.5.0');
 
 /* ---- ZÁKLADNÍ NASTAVENÍ ---- */
 add_action('after_setup_theme', function () {
@@ -288,11 +288,19 @@ function rdaurora_sc_uvod_platform() {
         wp_redirect(home_url('/kurz/')); exit;
     }
 
+    // Promo video v rámečku telefonu vpravo od hero textu. Výchozí video je přibalené
+    // v tématu (assets/video/), vlastní URL i vypnutí se nastavuje v Customizeru.
+    // Soubor musí ležet na vlastní doméně — CSP (refdrive-plugin) povoluje média jen z 'self'.
+    $hero_video_on  = get_option('rd_hero_video_on', '1') === '1';
+    $hero_video_url = get_option('rd_hero_video_url') ?: get_template_directory_uri() . '/assets/video/refdrive-promo.mp4';
+    $hero_poster    = get_template_directory_uri() . '/assets/video/refdrive-promo-poster.jpg';
+
     ob_start(); ?>
 <div class="rd-page rd-uvod" style="padding-top:0">
 
   <!-- HERO -->
-  <div class="rd-hero-wrap">
+  <div class="rd-hero-wrap<?php echo $hero_video_on ? ' rd-hero-has-video' : ''; ?>">
+    <div class="rd-hero-text">
     <!-- Badge linky nad nadpisem -->
     <div class="rd-badge-row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;align-items:center">
       <a href="<?php echo home_url('/novinky/'); ?>" class="rd-pill-novinky" style="display:inline-flex;align-items:center;gap:5px;background:rgba(124,58,237,.18);border:1px solid rgba(167,139,250,.5);color:#c4b5fd;border-radius:99px;padding:5px 12px;font-size:.75rem;font-weight:600;text-decoration:none;transition:background .2s" onmouseover="this.style.background='rgba(124,58,237,.28)'" onmouseout="this.style.background='rgba(124,58,237,.18)'"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Novinky</a>
@@ -324,6 +332,41 @@ function rdaurora_sc_uvod_platform() {
       <?php endif; ?>
       <?php endif; ?>
     </div>
+    </div>
+
+    <?php if ($hero_video_on): ?>
+    <div class="rd-hero-phone">
+      <div class="rd-hero-phone-frame">
+        <div class="rd-hero-phone-screen">
+          <video id="rd-hero-video" src="<?php echo esc_url($hero_video_url); ?>" poster="<?php echo esc_url($hero_poster); ?>"
+                 autoplay muted loop playsinline preload="metadata" aria-label="Ukázka platformy refdrive.pro"></video>
+          <button type="button" id="rd-hero-sound" class="rd-hero-sound" aria-label="Zapnout zvuk">
+            <svg class="rd-ico-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+            <svg class="rd-ico-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </button>
+        </div>
+        <div class="rd-hero-phone-island"></div>
+      </div>
+    </div>
+    <script>
+    (function () {
+      var v = document.getElementById('rd-hero-video'), b = document.getElementById('rd-hero-sound');
+      if (!v || !b) return;
+      // Kdo má v systému omezené animace, nedostane automaticky běžící video — spustí si ho klepnutím.
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        v.removeAttribute('autoplay'); v.pause();
+      }
+      // Zapnutí zvuku přehraje video od začátku, aby návštěvník slyšel celou reklamu.
+      b.addEventListener('click', function () {
+        v.muted = !v.muted;
+        if (!v.muted) { v.currentTime = 0; v.play().catch(function () {}); }
+        b.classList.toggle('is-on', !v.muted);
+        b.setAttribute('aria-label', v.muted ? 'Zapnout zvuk' : 'Vypnout zvuk');
+      });
+      v.addEventListener('click', function () { if (v.paused) v.play().catch(function () {}); else v.pause(); });
+    })();
+    </script>
+    <?php endif; ?>
   </div>
 
   <!-- JAK TO FUNGUJE – skryto pro přihlášeného řidiče -->
@@ -466,6 +509,35 @@ add_action('customize_register', function($wp_customize) {
             'type'    => $type,
         ]);
     }
+
+    // Sekce: Video na úvodní stránce (rámeček telefonu vedle hero textu)
+    $wp_customize->add_section('aurora_hero_video', [
+        'title'    => 'Video na úvodní stránce',
+        'priority' => 32,
+    ]);
+    $wp_customize->add_setting('rd_hero_video_on', [
+        'default'           => '1',
+        'type'              => 'option',
+        'transport'         => 'refresh',
+        'sanitize_callback' => function ($v) { return $v ? '1' : '0'; },
+    ]);
+    $wp_customize->add_control('rd_hero_video_on', [
+        'label'   => 'Zobrazit video v rámečku telefonu',
+        'section' => 'aurora_hero_video',
+        'type'    => 'checkbox',
+    ]);
+    $wp_customize->add_setting('rd_hero_video_url', [
+        'default'           => '',
+        'type'              => 'option',
+        'transport'         => 'refresh',
+        'sanitize_callback' => 'esc_url_raw',
+    ]);
+    $wp_customize->add_control('rd_hero_video_url', [
+        'label'       => 'URL vlastního videa (MP4)',
+        'description' => 'Prázdné = výchozí video tématu. Video musí být na této doméně (např. z knihovny médií) a na výšku 9:16.',
+        'section'     => 'aurora_hero_video',
+        'type'        => 'url',
+    ]);
 
     // Sekce: URL patičky
     $wp_customize->add_section('aurora_urls', [
