@@ -577,59 +577,59 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 .rd-hero-arrow:hover { color: var(--au-violet-l) !important; transform: translateX(4px) !important; }
 
 /* ================================================
-   HERO VIDEO — promo video v rámečku telefonu vpravo od textu
-   (na mobilu pod tlačítky). Zapíná se v Customizeru.
+   HERO VIDEO — promo video v kartě s tenkým přechodovým okrajem vpravo od textu.
+   Mobil na výšku: karta pod tlačítky. Mobil na šířku: vedle textu, výška podle displeje.
+   Zapíná se v Customizeru.
    ================================================ */
 .rd-hero-wrap.rd-hero-has-video {
   display: grid !important;
   grid-template-columns: minmax(0, 1fr) auto;
-  column-gap: 48px;
+  column-gap: clamp(24px, 5vw, 64px);
   align-items: center;
 }
-.rd-hero-phone {
-  width: clamp(230px, 22vw, 290px);
-  margin-right: clamp(0px, 5vw, 72px);
+.rd-hero-media {
+  width: clamp(220px, 21vw, 290px);
+  margin-right: clamp(0px, 4vw, 64px);
   animation: auFloat 6s ease-in-out infinite;
 }
-.rd-hero-phone-frame {
+/* Okraj = 1px padding s přechodovým pozadím; video má o 1px menší rádius, aby okraj lícoval. */
+.rd-hero-card {
   position: relative;
-  padding: 10px;
-  border-radius: 46px;
-  background: #0d0b19;
+  padding: 1px;
+  border-radius: 26px;
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--rd-grad-from) 80%, transparent) 0%,
+    rgba(255,255,255,.10) 45%,
+    color-mix(in srgb, var(--rd-grad-to) 70%, transparent) 100%);
   box-shadow:
-    0 0 0 1px rgba(255,255,255,.14),
-    0 0 0 5px #1c1830,
-    0 30px 70px color-mix(in srgb, var(--rd-grad-from) 38%, transparent),
-    0 10px 90px color-mix(in srgb, var(--rd-grad-to) 22%, transparent);
+    0 28px 60px -18px color-mix(in srgb, var(--rd-grad-from) 55%, transparent),
+    0 10px 90px -24px color-mix(in srgb, var(--rd-grad-to) 45%, transparent);
 }
-/* boční tlačítka telefonu */
-.rd-hero-phone-frame::before,
-.rd-hero-phone-frame::after {
-  content: ''; position: absolute; width: 4px; border-radius: 2px; background: #2a2544;
+[data-theme="light"] .rd-hero-card {
+  background: linear-gradient(145deg,
+    color-mix(in srgb, var(--rd-grad-from) 55%, transparent) 0%,
+    rgba(0,0,0,.06) 45%,
+    color-mix(in srgb, var(--rd-grad-to) 45%, transparent) 100%);
+  box-shadow:
+    0 24px 50px -20px color-mix(in srgb, var(--rd-grad-from) 40%, transparent),
+    0 8px 70px -28px color-mix(in srgb, var(--rd-grad-to) 35%, transparent);
 }
-.rd-hero-phone-frame::before { left: -9px; top: 22%; height: 11%; box-shadow: 0 60px 0 #2a2544; }
-.rd-hero-phone-frame::after  { right: -9px; top: 28%; height: 16%; }
-.rd-hero-phone-screen {
-  position: relative;
-  aspect-ratio: 9 / 17;
-  border-radius: 37px;
-  overflow: hidden;
+.rd-hero-card video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border-radius: 25px;
   background: #06040f;
-}
-.rd-hero-phone-screen video {
-  display: block; width: 100%; height: 100%;
-  object-fit: cover; cursor: pointer;
-}
-.rd-hero-phone-island {
-  position: absolute; top: 19px; left: 50%; transform: translateX(-50%);
-  width: 30%; height: 20px; border-radius: 12px; background: #000;
+  cursor: pointer;
 }
 .rd-hero-sound {
-  position: absolute; right: 12px; bottom: 12px;
-  width: 42px; height: 42px; border-radius: 50%;
+  position: absolute; right: 14px; bottom: 14px;
+  width: 40px; height: 40px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   border: 1px solid rgba(255,255,255,.25);
-  background: rgba(10,8,22,.55); color: #fff; cursor: pointer;
+  background: rgba(10,8,22,.5); color: #fff; cursor: pointer;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   transition: background .2s, transform .2s;
 }
@@ -638,12 +638,27 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 .rd-hero-sound.is-on .rd-ico-off { display: none; }
 .rd-hero-sound.is-on .rd-ico-on { display: block; }
 
-@media (max-width: 860px) {
-  .rd-hero-wrap.rd-hero-has-video { grid-template-columns: 1fr; row-gap: 40px; }
-  .rd-hero-phone { justify-self: center; margin-right: 0; width: min(250px, 68vw); }
+/* Mobil / tablet na výšku — karta pod tlačítky, na střed */
+@media (max-width: 860px) and (orientation: portrait) {
+  .rd-hero-wrap.rd-hero-has-video { grid-template-columns: 1fr; row-gap: 36px; }
+  .rd-hero-media { justify-self: center; margin-right: 0; width: min(260px, 66vw); }
+}
+/* Mobil na šířku — karta zůstává vpravo od textu, výšku jí určuje výška displeje */
+@media (orientation: landscape) and (max-height: 600px) {
+  .rd-hero-wrap.rd-hero-has-video { column-gap: 28px; padding-top: 28px !important; }
+  /* výška karty = výška displeje bez hlavičky a odsazení (~110 px), šířka dopočtená z 9:16 */
+  .rd-hero-media {
+    align-self: start;
+    margin-right: 0;
+    width: clamp(110px, calc((100vh - 110px) * 9 / 16), 260px);
+    width: clamp(110px, calc((100svh - 110px) * 9 / 16), 260px);
+  }
+  .rd-hero-card, .rd-hero-card video { border-radius: 18px; }
+  .rd-hero-card video { border-radius: 17px; }
+  .rd-hero-sound { width: 34px; height: 34px; right: 10px; bottom: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .rd-hero-phone { animation: none; }
+  .rd-hero-media { animation: none; }
 }
 
 /* ================================================
