@@ -592,7 +592,8 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
   margin-right: clamp(0px, 4vw, 64px);
   animation: auFloat 6s ease-in-out infinite;
 }
-/* Okraj = 1px padding s přechodovým pozadím; video má o 1px menší rádius, aby okraj lícoval. */
+/* Okraj = 1px padding s přechodovým pozadím; video má o 1px menší rádius, aby okraj lícoval.
+   Pod kartou jen velmi lehký stín — žádná barevná záře. */
 .rd-hero-card {
   position: relative;
   padding: 1px;
@@ -601,18 +602,14 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
     color-mix(in srgb, var(--rd-grad-from) 80%, transparent) 0%,
     rgba(255,255,255,.10) 45%,
     color-mix(in srgb, var(--rd-grad-to) 70%, transparent) 100%);
-  box-shadow:
-    0 28px 60px -18px color-mix(in srgb, var(--rd-grad-from) 55%, transparent),
-    0 10px 90px -24px color-mix(in srgb, var(--rd-grad-to) 45%, transparent);
+  box-shadow: 0 12px 28px -16px rgba(0, 0, 0, .45);
 }
 [data-theme="light"] .rd-hero-card {
   background: linear-gradient(145deg,
     color-mix(in srgb, var(--rd-grad-from) 55%, transparent) 0%,
     rgba(0,0,0,.06) 45%,
     color-mix(in srgb, var(--rd-grad-to) 45%, transparent) 100%);
-  box-shadow:
-    0 24px 50px -20px color-mix(in srgb, var(--rd-grad-from) 40%, transparent),
-    0 8px 70px -28px color-mix(in srgb, var(--rd-grad-to) 35%, transparent);
+  box-shadow: 0 12px 26px -16px rgba(40, 20, 80, .22);
 }
 .rd-hero-card video {
   display: block;
@@ -662,72 +659,62 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 
 /* ================================================
    DOPRAVNÍ POZADÍ — úvodní sekce (hero) + patička
-   SVG generuje assets/bg-doprava.js, styl se volí v Customizeru.
+   SVG generuje assets/bg-doprava.js, styl se volí v Customizeru (zatím „Noční dálnice“).
    Všechny barvy jdou přes proměnné tématu → reagují na přepnutí barev i světlý/tmavý režim.
    ================================================ */
-.rdbg { position: absolute; left: 0; width: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
+.rdbg {
+  position: absolute; left: 0; width: 100%; pointer-events: none; overflow: hidden; z-index: 0;
+  --rdbg-head: #fff4d6;   /* přední světla */
+  --rdbg-tail: #ff4d4d;   /* koncová světla */
+}
+[data-theme="light"] .rdbg {
+  /* na světlém pozadí by bílá světla zmizela — použít barvy tématu */
+  --rdbg-head: var(--rd-grad-from);
+  --rdbg-tail: #e11d48;
+}
 .rdbg svg { position: absolute; inset: 0; display: block; }
 .rdbg svg * { transform-box: view-box; }
 .rdbg-hero {
   top: 0;
-  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent);
-          mask-image: linear-gradient(180deg, #000 72%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 75%, transparent);
+          mask-image: linear-gradient(180deg, #000 75%, transparent);
 }
 .rdbg-foot { top: 0; bottom: 0; }
 .rdpro-footer > *:not(.rdbg) { position: relative; z-index: 1; }
-/* závoj pod textem — pozadí nesmí rušit čitelnost */
+/* závoj pod textem — silnice nesmí rušit čitelnost */
 .rdbg-veil {
   position: absolute; inset: 0;
   background: linear-gradient(90deg,
-    color-mix(in srgb, var(--au-bg) 90%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 70%, transparent) 36%,
-    transparent 60%);
-}
-.rdbg-hero.is-mobile .rdbg-veil {
-  /* nahoře text (silný závoj), dole video s trasou po okrajích (slabý) */
-  background: linear-gradient(180deg,
     color-mix(in srgb, var(--au-bg) 85%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 80%, transparent) 52%,
-    color-mix(in srgb, var(--au-bg) 12%, transparent) 64%,
-    color-mix(in srgb, var(--au-bg) 20%, transparent) 100%);
+    color-mix(in srgb, var(--au-bg) 60%, transparent) 34%,
+    transparent 58%);
+}
+/* mobil na výšku: text nahoře (nad horizontem nic není), silnice kolem videa pod ním */
+.rdbg-hero.is-mobile .rdbg-veil {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--au-bg) 45%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 35%, transparent) 55%,
+    transparent 70%);
 }
 .rdbg-foot .rdbg-veil {
   background: linear-gradient(90deg,
-    color-mix(in srgb, var(--au-bg) 85%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 55%, transparent) 38%,
-    transparent 62%);
+    color-mix(in srgb, var(--au-bg) 82%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 55%, transparent) 40%,
+    transparent 66%);
 }
 .rdbg-foot.is-mobile .rdbg-veil {
-  background: linear-gradient(90deg,
-    color-mix(in srgb, var(--au-bg) 80%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 60%, transparent) 70%,
-    transparent 88%);
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--au-bg) 35%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 55%, transparent) 60%,
+    color-mix(in srgb, var(--au-bg) 40%, transparent) 100%);
 }
-/* ve světlém režimu působí barevné prvky na světlém pozadí výrazněji */
-[data-theme="light"] .rdbg svg { opacity: .7; }
-/* mapa */
-.rdbg-draw { stroke-dasharray: 1000; animation: rdbgDraw 2.8s cubic-bezier(.4,0,.2,1) .5s both; }
-.rdbg-flow { animation: rdbgFade .5s ease 3.2s both, rdbgFlow 1.2s linear 3.2s infinite; }
-.rdbg .rdbg-pulse { transform-box: fill-box; transform-origin: center; animation: rdbgPulse 2.4s ease-out infinite; }
-/* světelné stopy */
-.rdbg-sway { transform-origin: 50% 60%; animation: rdbgSway 18s ease-in-out infinite alternate; }
-.rdbg-car { animation: rdbgCar 8s linear infinite; }
 /* dálnice */
-.rdbg-lanes { animation: rdbgLanes 1.4s linear infinite; }
+.rdbg-lanes { opacity: .5; animation: rdbgLanes 1.1s linear infinite; }
 .rdbg-hwcar { opacity: 0; transform-origin: 0 0; }
-.rdbg-roadline { animation: rdbgRoad 1s linear infinite; }
-.rdbg-streak { animation: rdbgStreak 10s linear infinite; }
-.rdbg-streak.is-rev { animation-direction: reverse; }
+/* světlé barvy pruhů na světlém pozadí zanikají — ve světlém režimu je zesílit */
+[data-theme="light"] .rdbg-lanes { opacity: .8; }
 
-@keyframes rdbgDraw   { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
-@keyframes rdbgFade   { from { opacity: 0; } to { opacity: 1; } }
-@keyframes rdbgFlow   { to { stroke-dashoffset: -24; } }
-@keyframes rdbgPulse  { 0% { transform: scale(.6); opacity: .35; } 100% { transform: scale(2.6); opacity: 0; } }
-@keyframes rdbgSway   { 0% { transform: translateY(-6px) rotate(-.4deg); } 100% { transform: translateY(6px) rotate(.4deg); } }
-@keyframes rdbgCar    { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1000; } }
-@keyframes rdbgLanes  { from { transform: scale(1); } to { transform: scale(1.25); } }
-@keyframes rdbgRoad   { to { stroke-dashoffset: 48; } }
-@keyframes rdbgStreak { from { transform: translateX(-160px); } to { transform: translateX(calc(var(--rdbg-w, 1400px) + 160px)); } }
+@keyframes rdbgLanes { from { transform: scale(1); } to { transform: scale(1.25); } }
 
 .rdbg.is-paused * { animation-play-state: paused !important; }
 @media (prefers-reduced-motion: reduce) {

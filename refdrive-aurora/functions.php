@@ -53,7 +53,7 @@ function rd_pwa_copy_files() {
 
 if (!defined('ABSPATH')) exit;
 
-define('RDAURORA_VERSION', '3.6.1');
+define('RDAURORA_VERSION', '3.7.0');
 
 /* ---- ZÁKLADNÍ NASTAVENÍ ---- */
 add_action('after_setup_theme', function () {
@@ -87,7 +87,7 @@ add_action('wp_enqueue_scripts', function () {
         RDAURORA_VERSION,
         true
     );
-    // Dopravní pozadí úvodní sekce a patičky (styl z Customizeru, výchozí „mapa“)
+    // Dopravní pozadí úvodní sekce a patičky (styl z Customizeru, výchozí „dálnice“)
     $bg = rdaurora_bg_doprava();
     if ($bg !== 'vypnuto') {
         wp_enqueue_script(
@@ -101,18 +101,18 @@ add_action('wp_enqueue_scripts', function () {
     }
 });
 
-// Styly dopravního pozadí (klíč => popisek v Customizeru)
+// Styly dopravního pozadí (klíč => popisek v Customizeru). Nový styl = položka sem
+// + implementace v registru STYLES v assets/bg-doprava.js.
 function rdaurora_bg_doprava_styly() {
     return [
-        'mapa'    => 'Mapa trasy (výchozí)',
-        'stopy'   => 'Světelné stopy',
-        'dalnice' => 'Noční dálnice',
+        'dalnice' => 'Noční dálnice (výchozí)',
         'vypnuto' => 'Vypnuto',
     ];
 }
+// Neznámá/zrušená hodnota (např. dřívější „mapa“ nebo „stopy“) → výchozí styl
 function rdaurora_bg_doprava() {
-    $v = get_option('rd_bg_doprava', 'mapa');
-    return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'mapa';
+    $v = get_option('rd_bg_doprava', 'dalnice');
+    return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'dalnice';
 }
 
 
@@ -569,10 +569,10 @@ add_action('customize_register', function($wp_customize) {
         'priority'    => 33,
     ]);
     $wp_customize->add_setting('rd_bg_doprava', [
-        'default'           => 'mapa',
+        'default'           => 'dalnice',
         'type'              => 'option',
         'transport'         => 'refresh',
-        'sanitize_callback' => function ($v) { return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'mapa'; },
+        'sanitize_callback' => function ($v) { return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'dalnice'; },
     ]);
     $wp_customize->add_control('rd_bg_doprava', [
         'label'   => 'Styl pozadí',
