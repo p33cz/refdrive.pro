@@ -661,6 +661,65 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 }
 
 /* ================================================
+   DOPRAVNÍ POZADÍ — úvodní sekce (hero) + patička
+   SVG generuje assets/bg-doprava.js, styl se volí v Customizeru.
+   Všechny barvy jdou přes proměnné tématu → reagují na přepnutí barev i světlý/tmavý režim.
+   ================================================ */
+.rdbg { position: absolute; left: 0; width: 100%; pointer-events: none; overflow: hidden; z-index: 0; }
+.rdbg svg { position: absolute; inset: 0; display: block; }
+.rdbg svg * { transform-box: view-box; }
+.rdbg-hero {
+  top: 0;
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent);
+          mask-image: linear-gradient(180deg, #000 72%, transparent);
+}
+.rdbg-foot { top: 0; bottom: 0; }
+.rdpro-footer > *:not(.rdbg) { position: relative; z-index: 1; }
+/* závoj pod textem — pozadí nesmí rušit čitelnost */
+.rdbg-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--au-bg) 90%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 70%, transparent) 36%,
+    transparent 60%);
+}
+.rdbg-hero.is-mobile .rdbg-veil {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--au-bg) 85%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 78%, transparent) 55%,
+    color-mix(in srgb, var(--au-bg) 30%, transparent) 78%,
+    color-mix(in srgb, var(--au-bg) 55%, transparent) 100%);
+}
+/* mapa */
+.rdbg-draw { stroke-dasharray: 1000; animation: rdbgDraw 2.8s cubic-bezier(.4,0,.2,1) .5s both; }
+.rdbg-flow { animation: rdbgFade .5s ease 3.2s both, rdbgFlow 1.2s linear 3.2s infinite; }
+.rdbg .rdbg-pulse { transform-box: fill-box; transform-origin: center; animation: rdbgPulse 2.4s ease-out infinite; }
+/* světelné stopy */
+.rdbg-sway { transform-origin: 50% 60%; animation: rdbgSway 18s ease-in-out infinite alternate; }
+.rdbg-car { animation: rdbgCar 8s linear infinite; }
+/* dálnice */
+.rdbg-lanes { animation: rdbgLanes 1.4s linear infinite; }
+.rdbg-hwcar { opacity: 0; transform-origin: 0 0; }
+.rdbg-roadline { animation: rdbgRoad 1s linear infinite; }
+.rdbg-streak { animation: rdbgStreak 10s linear infinite; }
+.rdbg-streak.is-rev { animation-direction: reverse; }
+
+@keyframes rdbgDraw   { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+@keyframes rdbgFade   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rdbgFlow   { to { stroke-dashoffset: -24; } }
+@keyframes rdbgPulse  { 0% { transform: scale(.6); opacity: .35; } 100% { transform: scale(2.6); opacity: 0; } }
+@keyframes rdbgSway   { 0% { transform: translateY(-6px) rotate(-.4deg); } 100% { transform: translateY(6px) rotate(.4deg); } }
+@keyframes rdbgCar    { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -1000; } }
+@keyframes rdbgLanes  { from { transform: scale(1); } to { transform: scale(1.25); } }
+@keyframes rdbgRoad   { to { stroke-dashoffset: 48; } }
+@keyframes rdbgStreak { from { transform: translateX(-160px); } to { transform: translateX(calc(var(--rdbg-w, 1400px) + 160px)); } }
+
+.rdbg.is-paused * { animation-play-state: paused !important; }
+@media (prefers-reduced-motion: reduce) {
+  .rdbg * { animation: none !important; }
+}
+
+/* ================================================
    FEATURES — 4 sloupce, čistě na pozadí
    ================================================ */
 .rd-features {
