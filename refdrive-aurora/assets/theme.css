@@ -689,13 +689,16 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
     color-mix(in srgb, var(--au-bg) 60%, transparent) 34%,
     transparent 58%);
 }
-/* mobil na výšku: text nahoře (nad horizontem nic není), silnice kolem videa pod ním */
+/* mobil na výšku: šikmá dálnice přes celou sekci — pod textem (horní ~55 %) silnější závoj */
 .rdbg-hero.is-mobile .rdbg-veil {
   background: linear-gradient(180deg,
-    color-mix(in srgb, var(--au-bg) 45%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 35%, transparent) 55%,
-    transparent 70%);
+    color-mix(in srgb, var(--au-bg) 50%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 55%, transparent) 50%,
+    color-mix(in srgb, var(--au-bg) 15%, transparent) 60%,
+    transparent 100%);
 }
+.rdbg-hero.is-mobile { -webkit-mask-image: linear-gradient(180deg, #000 88%, transparent); mask-image: linear-gradient(180deg, #000 88%, transparent); }
+.rdbg-hero.is-mobile .rdbg-lanes { opacity: .65; }
 .rdbg-foot .rdbg-veil {
   background: linear-gradient(90deg,
     color-mix(in srgb, var(--au-bg) 82%, transparent) 0%,
@@ -712,7 +715,8 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 .rdbg-lanes { opacity: .5; animation: rdbgLanes 1.1s linear infinite; }
 .rdbg-hwcar { opacity: 0; transform-origin: 0 0; }
 /* světlé barvy pruhů na světlém pozadí zanikají — ve světlém režimu je zesílit */
-[data-theme="light"] .rdbg-lanes { opacity: .8; }
+[data-theme="light"] .rdbg-lanes,
+[data-theme="light"] .rdbg-hero.is-mobile .rdbg-lanes { opacity: .8; }
 
 @keyframes rdbgLanes { from { transform: scale(1); } to { transform: scale(1.25); } }
 
