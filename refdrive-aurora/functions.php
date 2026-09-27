@@ -53,7 +53,7 @@ function rd_pwa_copy_files() {
 
 if (!defined('ABSPATH')) exit;
 
-define('RDAURORA_VERSION', '3.5.2');
+define('RDAURORA_VERSION', '3.6.0');
 
 /* ---- ZÁKLADNÍ NASTAVENÍ ---- */
 add_action('after_setup_theme', function () {
@@ -87,7 +87,33 @@ add_action('wp_enqueue_scripts', function () {
         RDAURORA_VERSION,
         true
     );
+    // Dopravní pozadí úvodní sekce a patičky (styl z Customizeru, výchozí „mapa“)
+    $bg = rdaurora_bg_doprava();
+    if ($bg !== 'vypnuto') {
+        wp_enqueue_script(
+            'rdaurora-bg-doprava',
+            get_template_directory_uri() . '/assets/bg-doprava.js',
+            [],
+            RDAURORA_VERSION,
+            true
+        );
+        wp_add_inline_script('rdaurora-bg-doprava', 'window.RDBG_STYLE=' . wp_json_encode($bg) . ';', 'before');
+    }
 });
+
+// Styly dopravního pozadí (klíč => popisek v Customizeru)
+function rdaurora_bg_doprava_styly() {
+    return [
+        'mapa'    => 'Mapa trasy (výchozí)',
+        'stopy'   => 'Světelné stopy',
+        'dalnice' => 'Noční dálnice',
+        'vypnuto' => 'Vypnuto',
+    ];
+}
+function rdaurora_bg_doprava() {
+    $v = get_option('rd_bg_doprava', 'mapa');
+    return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'mapa';
+}
 
 
 
@@ -534,6 +560,25 @@ add_action('customize_register', function($wp_customize) {
         'description' => 'Prázdné = výchozí video tématu. Video musí být na této doméně (např. z knihovny médií) a na výšku 9:16.',
         'section'     => 'aurora_hero_video',
         'type'        => 'url',
+    ]);
+
+    // Sekce: Dopravní pozadí (úvodní sekce + patička)
+    $wp_customize->add_section('aurora_bg_doprava', [
+        'title'       => 'Dopravní pozadí',
+        'description' => 'Decentní animované pozadí za úvodní sekcí a v patičce. Barvy se řídí zvoleným barevným tématem a světlým/tmavým režimem.',
+        'priority'    => 33,
+    ]);
+    $wp_customize->add_setting('rd_bg_doprava', [
+        'default'           => 'mapa',
+        'type'              => 'option',
+        'transport'         => 'refresh',
+        'sanitize_callback' => function ($v) { return array_key_exists($v, rdaurora_bg_doprava_styly()) ? $v : 'mapa'; },
+    ]);
+    $wp_customize->add_control('rd_bg_doprava', [
+        'label'   => 'Styl pozadí',
+        'section' => 'aurora_bg_doprava',
+        'type'    => 'select',
+        'choices' => rdaurora_bg_doprava_styly(),
     ]);
 
     // Sekce: URL patičky
