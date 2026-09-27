@@ -67,27 +67,31 @@
     [.62, .70, .04, 11, 0, 'tail'], [.70, .85, .05, 14, -4, 'tail'], [.58, .60, .04, 9, -7, 'tail'], [.76, .9, .06, 16, -11, 'tail'],
     [.40, .04, .75, 10, -2, 'head'], [.32, .05, .85, 13, -6, 'head'], [.44, .04, .7, 8, -9, 'head']
   ];
-  var CARS_FOOT = [
-    [.62, .80, .05, 10, 0, 'tail'], [.72, .9, .06, 13, -6, 'tail'],
-    [.38, .05, .8, 9, -3, 'head'], [.30, .05, .9, 12, -8, 'head']
+  // šikmá dálnice (úběžník vpravo) — pruhy vpravo od středu vedou mimo obrazovku, proto jen levá polovina
+  var CARS_SLANT = [
+    [.47, .80, .05, 11, 0, 'tail'], [.42, .9, .05, 14, -5, 'tail'],
+    [.36, .05, .85, 10, -2, 'head'], [.28, .05, .9, 13, -7, 'head'], [.20, .05, .9, 12, -10, 'head']
   ];
 
   var STYLES = {
     dalnice: {
       hero: function (W, H, mobile, card) {
-        // úběžník: desktop/landscape za kartou s videem; mobil na výšku těsně nad videem
-        // (pod tlačítky), aby se silnice rozevírala kolem videa a nešla pod textem
-        var vp = card ? (mobile ? { x: card.left + card.width / 2, y: card.top - 18 }
-                                : { x: card.left + card.width / 2, y: card.top + card.height * .42 })
-                      : { x: W * .69, y: H * .44 };
-        return highway(W, H, { vp: vp, lanes: mobile ? 7 : 11, spread: mobile ? 2.6 : 3.2, dash: mobile ? 3 : 3.6,
-          glowRx: mobile ? .55 : .3, glowRy: mobile ? 22 : 34, cars: CARS_HERO, carGap: 13, carR: 10 });
+        if (mobile) {
+          // Mobil na výšku: první obrazovku zabírá celá text a video je až pod ní, takže silnice
+          // vedle videa by nebyla vidět. Proto šikmá dálnice přes celou úvodní sekci jako v patičce —
+          // úběžník vpravo nahoře pod hlavičkou, čitelnost textu hlídá závoj (.rdbg-hero.is-mobile).
+          return highway(W, H, { vp: { x: W * .84, y: 92 }, lanes: 9, spread: 3.8, dash: 3.8,
+            glowRx: .5, glowRy: 18, cars: CARS_SLANT, carGap: 12, carR: 9 });
+        }
+        // desktop / na šířku: úběžník za kartou s videem
+        var vp = card ? { x: card.left + card.width / 2, y: card.top + card.height * .42 } : { x: W * .69, y: H * .44 };
+        return highway(W, H, { vp: vp, lanes: 11, spread: 3.2, dash: 3.6, glowRx: .3, glowRy: 34, cars: CARS_HERO, carGap: 13, carR: 10 });
       },
       footer: function (W, H, mobile) {
         // šikmá dálnice přes celou patičku: úběžník vpravo nahoře, pruhy se rozevírají doleva dolů
         var vp = { x: W * (mobile ? .82 : .78), y: mobile ? 16 : 22 };
         return highway(W, H, { vp: vp, lanes: mobile ? 7 : 11, spread: mobile ? 3.6 : 3.4, dash: 3.2,
-          glowRx: .25, glowRy: 16, cars: CARS_FOOT, carGap: 13, carR: 10 });
+          glowRx: .25, glowRy: 16, cars: CARS_SLANT, carGap: 13, carR: 10 });
       }
     }
   };
