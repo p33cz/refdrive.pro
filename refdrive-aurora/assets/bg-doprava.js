@@ -118,6 +118,16 @@
       var top = document.createElement('div');
       top.className = 'rdbg rdbg-hero' + (stacked ? ' is-mobile' : '');
       top.style.height = H + 'px';
+      // Na výšku (video pod textem) silnice končí pod tlačítky a video stojí na čistém pozadí.
+      // Na šířku/desktopu je video vedle textu a silnice pod ním pokračuje (maska z CSS).
+      var btns = document.querySelector('.rd-uvod .rd-hero-btns');
+      if (stacked && btns && box) {
+        var fadeFrom = Math.round(btns.getBoundingClientRect().bottom + oy + 8), fadeTo = Math.round(box.top - 6);
+        if (fadeTo > fadeFrom) {
+          var m = 'linear-gradient(180deg, #000 ' + fadeFrom + 'px, transparent ' + fadeTo + 'px)';
+          top.style.webkitMaskImage = m; top.style.maskImage = m;
+        }
+      }
       top.innerHTML = svgWrap(W, H, S.hero(W, H, stacked, box)) + '<div class="rdbg-veil"></div>';
       document.body.insertBefore(top, document.body.firstChild);
       layers.push(top);
