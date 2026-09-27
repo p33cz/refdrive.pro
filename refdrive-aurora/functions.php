@@ -53,7 +53,7 @@ function rd_pwa_copy_files() {
 
 if (!defined('ABSPATH')) exit;
 
-define('RDAURORA_VERSION', '3.7.5');
+define('RDAURORA_VERSION', '3.7.6');
 
 /* ---- ZÁKLADNÍ NASTAVENÍ ---- */
 add_action('after_setup_theme', function () {
@@ -318,7 +318,8 @@ function rdaurora_sc_uvod_platform() {
     // v tématu (assets/video/), vlastní URL i vypnutí se nastavuje v Customizeru.
     // Soubor musí ležet na vlastní doméně — CSP (refdrive-plugin) povoluje média jen z 'self'.
     $hero_video_on  = get_option('rd_hero_video_on', '1') === '1';
-    $hero_video_url = get_option('rd_hero_video_url') ?: get_template_directory_uri() . '/assets/video/refdrive-promo.mp4';
+    // ?ver= u výchozího videa — po aktualizaci šablony (např. opravené video) si prohlížeč nesmí ponechat starou verzi z cache
+    $hero_video_url = get_option('rd_hero_video_url') ?: get_template_directory_uri() . '/assets/video/refdrive-promo.mp4?ver=' . RDAURORA_VERSION;
     $hero_poster    = get_template_directory_uri() . '/assets/video/refdrive-promo-poster.jpg';
 
     ob_start(); ?>
