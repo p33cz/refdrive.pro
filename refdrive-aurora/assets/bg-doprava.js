@@ -33,7 +33,7 @@
   /* ------------------------------------------------------------------
      1) MAPA TRASY — síť ulic, trasa k cíli (autoškola), auto na cestě
      ------------------------------------------------------------------ */
-  function mapGrid(W, H, s0) {
+  function mapGrid(W, H, s0, soft) {
     seed = s0;
     var s = '', xs = [], ys = [], x, y, i;
     for (x = -200; x < W + 200; x += 70 + rnd() * 50) xs.push(x);
@@ -41,24 +41,34 @@
     s += '<path d="M -200 ' + f(H * .78) + ' C ' + f(W * .25) + ' ' + f(H * .62) + ' ' + f(W * .45) + ' ' + f(H * 1.02) + ' ' + f(W + 200) + ' ' + f(H * .70) + '" fill="none" style="stroke:' + A1 + '" stroke-opacity=".05" stroke-width="38"/>';
     for (i = 0; i < xs.length; i++) s += '<line x1="' + f(xs[i]) + '" y1="-200" x2="' + f(xs[i] + (rnd() - .5) * 30) + '" y2="' + (H + 200) + '" style="stroke:' + INK + '" stroke-opacity="' + (i % 5 === 2 ? .07 : .035) + '" stroke-width="' + (i % 5 === 2 ? 3 : 1) + '"/>';
     for (i = 0; i < ys.length; i++) s += '<line x1="-200" y1="' + f(ys[i]) + '" x2="' + (W + 200) + '" y2="' + f(ys[i] + (rnd() - .5) * 30) + '" style="stroke:' + INK + '" stroke-opacity="' + (i % 4 === 1 ? .07 : .035) + '" stroke-width="' + (i % 4 === 1 ? 3 : 1) + '"/>';
-    s += '<circle cx="' + f(W * .62) + '" cy="' + f(H * .45) + '" r="' + f(Math.min(W, H) * .55) + '" fill="none" style="stroke:' + INK + '" stroke-opacity=".05" stroke-width="3"/>';
+    if (!soft) s += '<circle cx="' + f(W * .62) + '" cy="' + f(H * .45) + '" r="' + f(Math.min(W, H) * .55) + '" fill="none" style="stroke:' + INK + '" stroke-opacity=".05" stroke-width="3"/>';
+    else s = s.replace(/stroke-opacity="\.07"/g, 'stroke-opacity=".04"').replace(/stroke-opacity="\.035"/g, 'stroke-opacity=".022"');
     return { s: s, xs: xs, ys: ys };
   }
-  function pin(x, y, sc, delay) {
-    return '<g transform="translate(' + f(x) + ' ' + f(y) + ') scale(' + sc + ')">' +
+  function pin(x, y, sc, delay, op) {
+    return '<g transform="translate(' + f(x) + ' ' + f(y) + ') scale(' + sc + ')" opacity="' + (op || 1) + '">' +
       '<circle class="rdbg-pulse" style="fill:' + C2 + ';animation-delay:' + delay + 's" r="16" opacity=".22"/>' +
       '<path d="M0 0 C -9 -12 -14 -18 -14 -26 A 14 14 0 1 1 14 -26 C 14 -18 9 -12 0 0 Z" style="fill:' + C2 + '" opacity=".85"/>' +
       '<circle cy="-26" r="5.5" fill="#fff" opacity=".9"/></g>';
   }
-  function mapHero(W, H, mobile) {
+  function mapHero(W, H, mobile, card) {
     var id = 'rdbgm' + (++uid), g = mapGrid(W, H, 11), s = defs(id);
-    var ROT = -9, cx = W / 2, cy = H / 2;
+    var ROT = mobile ? 0 : -9, cx = W / 2, cy = H / 2;
     var pick = function (arr, v) { return arr.reduce(function (a, b) { return Math.abs(b - v) < Math.abs(a - v) ? b : a; }); };
-    // Na mobilu vede trasa pod videem a podél pravého okraje, na desktopu vpravo od textu — nikdy přes text.
-    var sx = pick(g.xs, W * .06), sy = pick(g.ys, mobile ? H * .97 : H * .93);
-    var mx = pick(g.xs, W * .50), my = pick(g.ys, mobile ? H * .97 : H * .66);
-    var ex = pick(g.xs, mobile ? W * .95 : W * .63), ey = pick(g.ys, mobile ? H * .66 : H * .30);
-    var d = 'M ' + sx + ' ' + sy + ' L ' + mx + ' ' + sy + ' L ' + mx + ' ' + my + ' L ' + ex + ' ' + my + ' L ' + ex + ' ' + ey;
+    var sx, sy, mx, my, ex, ey, d;
+    if (mobile && card) {
+      // Mobil: text zabírá celou šířku, volné jsou jen okraje vedle videa. Trasa vede levým okrajem
+      // nahoru, přejede „za videem“ na druhou stranu a končí pinem u pravého okraje.
+      var lx = card.left / 2, rx = (card.right + W) / 2;
+      sx = lx; sy = Math.min(H - 8, card.bottom + 30); mx = lx; my = card.top + card.height * .3; ex = rx; ey = card.top + card.height * .62;
+      d = 'M ' + f(sx) + ' ' + f(sy) + ' L ' + f(mx) + ' ' + f(my) + ' L ' + f(ex) + ' ' + f(my) + ' L ' + f(ex) + ' ' + f(ey);
+    } else {
+      // Desktop: trasa vpravo od textu, cíl mezi textem a videem.
+      sx = pick(g.xs, W * .06); sy = pick(g.ys, H * .93);
+      mx = pick(g.xs, W * .50); my = pick(g.ys, H * .66);
+      ex = pick(g.xs, W * .63); ey = pick(g.ys, H * .30);
+      d = 'M ' + sx + ' ' + sy + ' L ' + mx + ' ' + sy + ' L ' + mx + ' ' + my + ' L ' + ex + ' ' + my + ' L ' + ex + ' ' + ey;
+    }
     s += '<g transform="rotate(' + ROT + ' ' + cx + ' ' + cy + ')">' + g.s;
     s += '<path d="' + d + '" fill="none" stroke="url(#' + id + 'g)" stroke-width="12" stroke-linejoin="round" opacity=".10"/>';
     s += '<path id="' + id + 'route" class="rdbg-draw" pathLength="1000" d="' + d + '" fill="none" stroke="url(#' + id + 'g)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity=".7"/>';
@@ -66,19 +76,19 @@
     s += '<circle cx="' + sx + '" cy="' + sy + '" r="8" fill="none" style="stroke:' + C1 + '" stroke-width="2.5" opacity=".75"/><circle cx="' + sx + '" cy="' + sy + '" r="3" style="fill:' + C1 + '" opacity=".75"/>';
     // auto jede po trase (SMIL — animateMotion umí sledovat cestu i v natočené skupině)
     var car = '<circle r="11" fill="#fff" opacity=".12"/><circle r="5.5" fill="#fff" opacity=".85"/><circle r="2.5" style="fill:' + C1 + '"/>';
-    if (reduce) s += '<g transform="translate(' + mx + ' ' + f(sy + (my - sy) * .45) + ')">' + car + '</g>';
-    else s += '<g opacity="0">' + car + '<animateMotion dur="11s" begin="3.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#' + id + 'route"/></animateMotion>' +
+    if (reduce) s += '<g transform="translate(' + f(mx) + ' ' + f(sy + (my - sy) * .45) + ')">' + car + '</g>';
+    else s += '<g opacity="0">' + car + '<animateMotion dur="' + (mobile ? 9 : 11) + 's" begin="3.2s" repeatCount="indefinite" calcMode="linear"><mpath href="#' + id + 'route"/></animateMotion>' +
       '<set attributeName="opacity" to="1" begin="3.2s"/></g>';
     s += '</g>';
     var a = ROT * Math.PI / 180;
     var px = cx + (ex - cx) * Math.cos(a) - (ey - cy) * Math.sin(a), py = cy + (ex - cx) * Math.sin(a) + (ey - cy) * Math.cos(a);
-    s += pin(px, py, 1.1, 0);
+    s += pin(px, py, mobile ? .9 : 1.1, 0, .85);
     return s;
   }
-  function mapFooter(W, H) {
-    var s = defs('rdbgmf' + (++uid)) + mapGrid(W, H, 29).s.replace(/stroke-opacity="\.07"/g, 'stroke-opacity=".05"');
-    var P = [[.38, .42], [.47, .70], [.58, .36], [.68, .62], [.80, .40], [.92, .58]];
-    for (var i = 0; i < P.length; i++) s += pin(W * P[i][0], H * P[i][1], .75, (i * .55).toFixed(2));
+  function mapFooter(W, H, mobile) {
+    var s = defs('rdbgmf' + (++uid)) + mapGrid(W, H, 29, true).s;
+    var P = mobile ? [[.90, .22], [.95, .48]] : [[.64, .34], [.72, .62], [.82, .38], [.91, .60]];
+    for (var i = 0; i < P.length; i++) s += pin(W * P[i][0], H * P[i][1], mobile ? .5 : .6, (i * .7).toFixed(2), .45);
     return s;
   }
 
@@ -177,9 +187,13 @@
     var hero = document.querySelector('.rd-uvod .rd-hero-wrap');
     if (hero) {
       var hr = hero.getBoundingClientRect(), H = Math.round(hr.bottom + window.pageYOffset + (mobile ? 60 : 110));
-      var card = document.querySelector('.rd-hero-card'), vp = { x: W * .69, y: H * .44 };
-      if (card) { var cr = card.getBoundingClientRect(); vp = { x: cr.left + cr.width / 2, y: cr.top + window.pageYOffset + cr.height * .42 }; }
-      var inner = STYLE === 'stopy' ? trailsHero(W, H, mobile) : STYLE === 'dalnice' ? highwayHero(W, H, mobile, vp) : mapHero(W, H, mobile);
+      var card = document.querySelector('.rd-hero-card'), vp = { x: W * .69, y: H * .44 }, box = null;
+      if (card) {
+        var cr = card.getBoundingClientRect(), oy = window.pageYOffset;
+        vp = { x: cr.left + cr.width / 2, y: cr.top + oy + cr.height * .42 };
+        box = { left: cr.left, right: cr.right, top: cr.top + oy, bottom: cr.bottom + oy, height: cr.height };
+      }
+      var inner = STYLE === 'stopy' ? trailsHero(W, H, mobile) : STYLE === 'dalnice' ? highwayHero(W, H, mobile, vp) : mapHero(W, H, mobile, box);
       var top = document.createElement('div');
       top.className = 'rdbg rdbg-hero' + (mobile ? ' is-mobile' : '');
       top.style.height = H + 'px';
@@ -191,10 +205,10 @@
     var foot = document.querySelector('.rdpro-footer');
     if (foot) {
       var FH = foot.offsetHeight;
-      var finner = STYLE === 'stopy' ? trailsFooter(W, FH) : STYLE === 'dalnice' ? highwayFooter(W, FH) : mapFooter(W, FH);
+      var finner = STYLE === 'stopy' ? trailsFooter(W, FH) : STYLE === 'dalnice' ? highwayFooter(W, FH) : mapFooter(W, FH, mobile);
       var fb = document.createElement('div');
-      fb.className = 'rdbg rdbg-foot';
-      fb.innerHTML = svgWrap(W, FH, finner);
+      fb.className = 'rdbg rdbg-foot' + (mobile ? ' is-mobile' : '');
+      fb.innerHTML = svgWrap(W, FH, finner) + '<div class="rdbg-veil"></div>';
       foot.insertBefore(fb, foot.firstChild);
       layers.push(fb);
     }

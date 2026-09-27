@@ -684,12 +684,27 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
     transparent 60%);
 }
 .rdbg-hero.is-mobile .rdbg-veil {
+  /* nahoře text (silný závoj), dole video s trasou po okrajích (slabý) */
   background: linear-gradient(180deg,
     color-mix(in srgb, var(--au-bg) 85%, transparent) 0%,
-    color-mix(in srgb, var(--au-bg) 78%, transparent) 55%,
-    color-mix(in srgb, var(--au-bg) 30%, transparent) 78%,
-    color-mix(in srgb, var(--au-bg) 55%, transparent) 100%);
+    color-mix(in srgb, var(--au-bg) 80%, transparent) 52%,
+    color-mix(in srgb, var(--au-bg) 12%, transparent) 64%,
+    color-mix(in srgb, var(--au-bg) 20%, transparent) 100%);
 }
+.rdbg-foot .rdbg-veil {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--au-bg) 85%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 55%, transparent) 38%,
+    transparent 62%);
+}
+.rdbg-foot.is-mobile .rdbg-veil {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--au-bg) 80%, transparent) 0%,
+    color-mix(in srgb, var(--au-bg) 60%, transparent) 70%,
+    transparent 88%);
+}
+/* ve světlém režimu působí barevné prvky na světlém pozadí výrazněji */
+[data-theme="light"] .rdbg svg { opacity: .7; }
 /* mapa */
 .rdbg-draw { stroke-dasharray: 1000; animation: rdbgDraw 2.8s cubic-bezier(.4,0,.2,1) .5s both; }
 .rdbg-flow { animation: rdbgFade .5s ease 3.2s both, rdbgFlow 1.2s linear 3.2s infinite; }
