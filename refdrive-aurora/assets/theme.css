@@ -578,7 +578,7 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 
 /* ================================================
    HERO VIDEO — promo video v kartě s tenkým přechodovým okrajem vpravo od textu.
-   Mobil na výšku: karta pod tlačítky. Mobil na šířku: vedle textu, výška podle displeje.
+   Mobil na výšku: karta pod tlačítky. Mobil na šířku: vedle textu, velikost podle šířky displeje.
    Zapíná se v Customizeru.
    ================================================ */
 .rd-hero-wrap.rd-hero-has-video {
@@ -643,19 +643,18 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
   .rd-hero-wrap.rd-hero-has-video { grid-template-columns: 1fr; row-gap: 36px; }
   .rd-hero-media { justify-self: center; margin-right: 0; width: min(260px, 66vw); }
 }
-/* Mobil na šířku — karta zůstává vpravo od textu, výšku jí určuje výška displeje */
+/* Mobil na šířku — karta zůstává vpravo od textu. Výška displeje je tu jen ~260–340 px
+   (lišty prohlížeče), proto se velikost řídí šířkou: zbytek videa se ukáže po odrolování. */
 @media (orientation: landscape) and (max-height: 600px) {
-  .rd-hero-wrap.rd-hero-has-video { column-gap: 28px; padding-top: 28px !important; }
-  /* výška karty = výška displeje bez hlavičky a odsazení (~110 px), šířka dopočtená z 9:16 */
+  .rd-hero-wrap.rd-hero-has-video { column-gap: 32px; padding-top: 28px !important; }
   .rd-hero-media {
     align-self: start;
     margin-right: 0;
-    width: clamp(110px, calc((100vh - 110px) * 9 / 16), 260px);
-    width: clamp(110px, calc((100svh - 110px) * 9 / 16), 260px);
+    width: clamp(180px, 32vw, 300px);
   }
-  .rd-hero-card, .rd-hero-card video { border-radius: 18px; }
-  .rd-hero-card video { border-radius: 17px; }
-  .rd-hero-sound { width: 34px; height: 34px; right: 10px; bottom: 10px; }
+  .rd-hero-card { border-radius: 22px; }
+  .rd-hero-card video { border-radius: 21px; }
+  .rd-hero-sound { width: 36px; height: 36px; right: 12px; bottom: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .rd-hero-media { animation: none; }
