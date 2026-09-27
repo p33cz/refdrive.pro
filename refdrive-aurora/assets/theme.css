@@ -716,8 +716,12 @@ div[style*="display: flex"] > .rd-hero-badge { margin-bottom: 0 !important; }
 .rdbg-lanes { opacity: .5; animation: rdbgLanes 1.1s linear infinite; }
 .rdbg-hwcar { opacity: 0; transform-origin: 0 0; }
 /* světlé barvy pruhů na světlém pozadí zanikají — ve světlém režimu je zesílit */
-[data-theme="light"] .rdbg-lanes,
-[data-theme="light"] .rdbg-hero.is-mobile .rdbg-lanes { opacity: .8; }
+[data-theme="light"] .rdbg-lanes { opacity: .8; }
+/* světlý režim + mobil na výšku: silnice leží přímo pod textem na světlém podkladu a
+   barevné pruhy/světla tam působí rušivě — ztlumit celou vrstvu (pruhy i auta) jen tady,
+   tmavý režim, šířka i desktop zůstávají beze změny */
+[data-theme="light"] .rdbg-hero.is-mobile svg { opacity: .55; }
+[data-theme="light"] .rdbg-hero.is-mobile .rdbg-lanes { opacity: .65; }
 
 @keyframes rdbgLanes { from { transform: scale(1); } to { transform: scale(1.25); } }
 
