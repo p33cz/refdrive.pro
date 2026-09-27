@@ -20,10 +20,12 @@
 
   /* ------------------------------------------------------------------
      NOČNÍ DÁLNICE — perspektivní pruhy mizející k horizontu, jezdící auta
-     vp = úběžník (horizont), spread = jak široko se pruhy rozevírají u spodního okraje
+     vp = úběžník (horizont), spread = jak široko se pruhy rozevírají na „přední“ hraně silnice,
+     by = y přední hrany (výchozí spodek vrstvy). Menší vzdálenost by od horizontu při velkém
+     spread = pruhy víc do stran = šikmější silnice.
      ------------------------------------------------------------------ */
   function highway(W, H, o) {
-    var id = 'rdbgh' + (++uid), vp = o.vp, by = H + 40, n = o.lanes, i, k;
+    var id = 'rdbgh' + (++uid), vp = o.vp, by = o.by != null ? o.by : H + 40, n = o.lanes, i, k;
     var Q = .8;   // pomlčky v geometrické řadě t = Q^k → zvětšení skupiny o 1/Q je plynulá smyčka
     var s = '<defs>' +
       '<radialGradient id="' + id + 'glow"><stop offset="0" style="stop-color:' + A1 + ';stop-opacity:.55"/><stop offset=".5" style="stop-color:' + C2 + ';stop-opacity:.15"/><stop offset="1" style="stop-color:' + C2 + ';stop-opacity:0"/></radialGradient>' +
@@ -37,7 +39,8 @@
     for (i = 0; i <= n; i++) {
       var bx = vp.x + (i / n - .5) * W * o.spread; lanes.push(bx);
       if (i === 0 || i === n) {
-        s += '<line x1="' + f(vp.x) + '" y1="' + f(vp.y) + '" x2="' + f(bx) + '" y2="' + by + '" style="stroke:' + A1 + '" stroke-opacity=".38" stroke-width="1.6"/>';
+        // krajnice protažené i za přední hranu (pomlčky tam také sahají, t až 1,56)
+        s += '<line x1="' + f(vp.x) + '" y1="' + f(vp.y) + '" x2="' + f(vp.x + (bx - vp.x) * 1.6) + '" y2="' + f(vp.y + (by - vp.y) * 1.6) + '" style="stroke:' + A1 + '" stroke-opacity=".38" stroke-width="1.6"/>';
         continue;
       }
       for (k = -2; k < 16; k++) {
@@ -67,6 +70,11 @@
     [.62, .70, .04, 11, 0, 'tail'], [.70, .85, .05, 14, -4, 'tail'], [.58, .60, .04, 9, -7, 'tail'], [.76, .9, .06, 16, -11, 'tail'],
     [.40, .04, .75, 10, -2, 'head'], [.32, .05, .85, 13, -6, 'head'], [.44, .04, .7, 8, -9, 'head']
   ];
+  // mobil na výšku: šikmá silnice přes textovou část — auta větší a jezdí až za přední hranu (t > 1)
+  var CARS_PORTRAIT = [
+    [.45, 1.25, .05, 9, 0, 'tail'], [.38, 1.35, .05, 11, -4, 'tail'], [.31, 1.4, .05, 13, -9, 'tail'],
+    [.34, .05, 1.35, 8, -2, 'head'], [.27, .05, 1.45, 10, -6, 'head'], [.41, .05, 1.3, 12, -10, 'head']
+  ];
   // šikmá dálnice (úběžník vpravo) — pruhy vpravo od středu vedou mimo obrazovku, proto jen levá polovina
   var CARS_SLANT = [
     [.47, .80, .05, 11, 0, 'tail'], [.42, .9, .05, 14, -5, 'tail'],
@@ -80,8 +88,10 @@
           // Mobil na výšku: první obrazovku zabírá celá text a video je až pod ní, takže silnice
           // vedle videa by nebyla vidět. Proto šikmá dálnice přes celou úvodní sekci jako v patičce —
           // úběžník vpravo nahoře pod hlavičkou, čitelnost textu hlídá závoj (.rdbg-hero.is-mobile).
-          return highway(W, H, { vp: { x: W * .84, y: 92 }, lanes: 9, spread: 3.8, dash: 3.8,
-            glowRx: .5, glowRy: 18, cars: CARS_SLANT, carGap: 12, carR: 9 });
+          // Silnice je „krátká“ do hloubky (přední hrana ~1,15 šířky pod horizontem) a hodně
+          // rozevřená — pruhy jdou víc do stran, stejně šikmé jako na šířku/desktopu.
+          return highway(W, H, { vp: { x: W * .88, y: 100 }, by: 100 + W * 1.15, lanes: 11, spread: 4.5, dash: 4,
+            glowRx: .55, glowRy: 18, cars: CARS_PORTRAIT, carGap: 16, carR: 15 });
         }
         // desktop / na šířku: úběžník za kartou s videem
         var vp = card ? { x: card.left + card.width / 2, y: card.top + card.height * .42 } : { x: W * .69, y: H * .44 };
