@@ -53,7 +53,7 @@ function rd_pwa_copy_files() {
 
 if (!defined('ABSPATH')) exit;
 
-define('RDAURORA_VERSION', '3.5.0');
+define('RDAURORA_VERSION', '3.5.1');
 
 /* ---- ZÁKLADNÍ NASTAVENÍ ---- */
 add_action('after_setup_theme', function () {
@@ -288,7 +288,7 @@ function rdaurora_sc_uvod_platform() {
         wp_redirect(home_url('/kurz/')); exit;
     }
 
-    // Promo video v rámečku telefonu vpravo od hero textu. Výchozí video je přibalené
+    // Promo video v kartě vpravo od hero textu. Výchozí video je přibalené
     // v tématu (assets/video/), vlastní URL i vypnutí se nastavuje v Customizeru.
     // Soubor musí ležet na vlastní doméně — CSP (refdrive-plugin) povoluje média jen z 'self'.
     $hero_video_on  = get_option('rd_hero_video_on', '1') === '1';
@@ -335,17 +335,14 @@ function rdaurora_sc_uvod_platform() {
     </div>
 
     <?php if ($hero_video_on): ?>
-    <div class="rd-hero-phone">
-      <div class="rd-hero-phone-frame">
-        <div class="rd-hero-phone-screen">
-          <video id="rd-hero-video" src="<?php echo esc_url($hero_video_url); ?>" poster="<?php echo esc_url($hero_poster); ?>"
-                 autoplay muted loop playsinline preload="metadata" aria-label="Ukázka platformy refdrive.pro"></video>
-          <button type="button" id="rd-hero-sound" class="rd-hero-sound" aria-label="Zapnout zvuk">
-            <svg class="rd-ico-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-            <svg class="rd-ico-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-          </button>
-        </div>
-        <div class="rd-hero-phone-island"></div>
+    <div class="rd-hero-media">
+      <div class="rd-hero-card">
+        <video id="rd-hero-video" src="<?php echo esc_url($hero_video_url); ?>" poster="<?php echo esc_url($hero_poster); ?>"
+               autoplay muted loop playsinline preload="metadata" aria-label="Ukázka platformy refdrive.pro"></video>
+        <button type="button" id="rd-hero-sound" class="rd-hero-sound" aria-label="Zapnout zvuk">
+          <svg class="rd-ico-off" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          <svg class="rd-ico-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+        </button>
       </div>
     </div>
     <script>
@@ -510,7 +507,7 @@ add_action('customize_register', function($wp_customize) {
         ]);
     }
 
-    // Sekce: Video na úvodní stránce (rámeček telefonu vedle hero textu)
+    // Sekce: Video na úvodní stránce (karta vedle hero textu)
     $wp_customize->add_section('aurora_hero_video', [
         'title'    => 'Video na úvodní stránce',
         'priority' => 32,
@@ -522,7 +519,7 @@ add_action('customize_register', function($wp_customize) {
         'sanitize_callback' => function ($v) { return $v ? '1' : '0'; },
     ]);
     $wp_customize->add_control('rd_hero_video_on', [
-        'label'   => 'Zobrazit video v rámečku telefonu',
+        'label'   => 'Zobrazit video na úvodní stránce',
         'section' => 'aurora_hero_video',
         'type'    => 'checkbox',
     ]);
