@@ -45,6 +45,12 @@ below), each with its own version.
 - Overview table queries: `LIMIT 100`.
 - Historical section queries: `LIMIT 50`.
 
+### refdrive-aurora — povinná kontrola každé vizuální změny
+Každou úpravu vzhledu (téma i frontend pluginů) vždy ověř ve všech kombinacích:
+- **Responzivita:** desktop, tablet, mobil na výšku **i na šířku** (bez horizontálního přetečení, nic se nepřekrývá s textem).
+- **Světlý i tmavý režim** (`[data-theme="light"]` / výchozí tmavý).
+- **Všechna barevná schémata** (`rd_get_color_themes()`: Aurora, Ocean, Sunset, Forest, Midnight, Rose Gold) — barvy piš jen přes proměnné `--rd-grad-from/to`, `--rd-accent-1/2`, `--au-*`, nikdy natvrdo, aby reagovaly i na přepnutí za běhu.
+
 ## Working in this repo
 
 - No build/lint/test commands exist — there is no `package.json`, `composer.json`, or CI config. Validate
